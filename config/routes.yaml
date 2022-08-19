@@ -10,6 +10,13 @@ app_note_create:
     path: /n/create
     controller: App\Controller\NoteController::create
 
+app_note_view:
+    path: /n/{guid}
+    controller: App\Controller\NoteController::view
+
 app_note_read:
     path: /n/{guid}
     controller: App\Controller\NoteController::read
+    methods: POST
+
+
