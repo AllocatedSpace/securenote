@@ -24,6 +24,16 @@ class NoteController extends AbstractController
 
         $encrypted = SaferCrypto::encrypt($message, $key);
         $decrypted = SaferCrypto::decrypt($encrypted, $key);
+        try {
+            $decryptedFail = SaferCrypto::decrypt($encrypted, $key . "asaaa");
+        }
+        catch(\Exception $e)
+        {
+            if($e->getMessage() == 'Encryption failure')
+            {
+                $decryptedFail = 'bad key';
+            }
+        }
 
         //var_dump($encrypted, $decrypted);
 
@@ -32,6 +42,7 @@ class NoteController extends AbstractController
             'key' => $key,
             'encrypted' => $encrypted,
             'decrypted' => $decrypted,
+            'decryptedFail' => $decryptedFail
         ]);
     }
 
@@ -87,6 +98,7 @@ class NoteController extends AbstractController
 
         $encrypted = SaferCrypto::encrypt($message, $key);
         $decrypted = SaferCrypto::decrypt($encrypted, $key);
+        
 
         //var_dump($encrypted, $decrypted);
 

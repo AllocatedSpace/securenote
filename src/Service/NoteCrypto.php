@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+
 // https://stackoverflow.com/a/30189841
 class UnsafeCrypto
 {
@@ -49,7 +50,7 @@ class UnsafeCrypto
         if ($encoded) {
             $message = base64_decode($message, true);
             if ($message === false) {
-                throw new Exception('Encryption failure');
+                throw new \Exception('Encryption failure');
             }
         }
 
@@ -112,7 +113,7 @@ class SaferCrypto extends UnsafeCrypto
         if ($encoded) {
             $message = base64_decode($message, true);
             if ($message === false) {
-                throw new Exception('Encryption failure');
+                throw new \Exception('Encryption failure');
             }
         }
 
@@ -130,7 +131,7 @@ class SaferCrypto extends UnsafeCrypto
         );
 
         if (!self::hashEquals($mac, $calculated)) {
-            throw new Exception('Encryption failure');
+            throw new \Exception('Encryption failure');
         }
 
         // Pass to UnsafeCrypto::decrypt
