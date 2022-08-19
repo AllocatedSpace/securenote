@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+{% block title %}Read Note{% endblock %}
+
+{% block body %}
+<div class="container" id="container-note-create">
+    <div class="row">
+        <div class="col">
+            
+            
+            <form id="form-note-create">
+
+
+            <div class="alert alert-warning saved-link-display" role="alert" style="display:none">
+                
+            </div>
+
+            <div class="form-row d-flex align-items-center mb-3">
+                <div class="form-group ">
+                    <label for="ttl">Maximum Days to Live</label>
+                    <input type="number" class="form-control" name="ttl" id="ttl" min="1" max="30" width="4em" placeholder="1 to 30 days" required>
+                </div>
+                <div class="fform-group ps-5 pt-3 mr-auto d-flex align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="destroy-on-read" id="destroy-on-read">
+                        <label class="form-check-label" for="destroy-on-read">
+                            Destroy on read
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row d-flex align-items-center  mb-3">
+                <div class="form-group col-12" >
+                    <label for="secretnote">Secret</label>
+                    <textarea class="form-control autogrow" name="secretnote" id="secretnote" rows="5" required></textarea>
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -3,6 +3,7 @@
 // src/Controller/LuckyController.php
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,9 +41,9 @@ class NoteController extends AbstractController
         return $this->render('note/test.html.twig', [
             'guid' => $guid,
             'key' => $key,
-            'encrypted' => $encrypted,
+            'encrypted' => base64_encode($encrypted),
             'decrypted' => $decrypted,
-            'decryptedFail' => $decryptedFail
+            'decryptedFail' => base64_encode($decryptedFail)
         ]);
     }
 
@@ -54,8 +55,15 @@ class NoteController extends AbstractController
     }
 
 
+    public function createView(ManagerRegistry $doctrine, Request $request): Response
+    {
+        return $this->render('note/create.html.twig', [
+           
+        ]);
+    }
 
-    public function create(ManagerRegistry $doctrine, Request $request): JsonResponse
+
+    public function createSave(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
         $guid = NoteGUID::uniqidReal();
         $key = NoteGUID::uniqidReal();
@@ -68,13 +76,15 @@ class NoteController extends AbstractController
 
         $entityManager = $doctrine->getManager();
 
+        
+
         $note = new Note();
         $note->setGuid($guid);
-        $note->setEncrypted($encrypted);
+        $note->setEncrypted(base64_encode($encrypted));
         $note->setDestroyOnRead($destroyOnRead);
 
-        $expire = new DateTime(); 
-        $expire->add(DateInterval::createFromDateString($daysToLive . ' day'));
+        $expire = new \DateTime(); 
+        $expire->add(\DateInterval::createFromDateString($daysToLive . ' day'));
         $note->setExpire($expire);
 
         $entityManager->persist($note);
@@ -83,8 +93,8 @@ class NoteController extends AbstractController
 
         $httpHost = $request->server->get('HTTP_HOST');
 
-        return $this->json([
-            'link' => "https://{$httpHost}/{$guid}#{$key}",
+        return new JsonResponse([
+            'link' => "https://{$httpHost}/n/{$guid}#{$key}",
         ]);
     }
 
@@ -93,10 +103,11 @@ class NoteController extends AbstractController
     {
 
         $key = $request->request->get('hash'); //POST
+        
 
-        if(!$request->isXmlHttpRequest() || !preg_match('~^[a-z0-9]{26}$~', $key) || !!preg_match('~^[a-z0-9]{26}$~', $guid))
+        if(!$request->isXmlHttpRequest() || !preg_match('~^[a-z0-9]{26}$~', $key) || !preg_match('~^[a-z0-9]{26}$~', $guid))
         {
-            return $this->json([
+            return new JsonResponse([
                 'status' => 'Bad Request'
             ], $status = 400);
         }        
@@ -105,25 +116,35 @@ class NoteController extends AbstractController
         
         if(!$note)
         {
-            return $this->json([
+            return new JsonResponse([
                 'status' => 'Note doesn\'t exist or has expired.'
             ], $status = 404);
         }
+
+        //die('the note?' . $note->getId() . '; the hash: ' . $key . '; the data: ' . $note->getEncrypted());
 
        
         $decrypted = '';
 
         try {
-            $decrypted = SaferCrypto::decrypt($note->getEncrypted(), $key);
+            
+            $decrypted = SaferCrypto::decrypt(base64_decode(stream_get_contents($note->getEncrypted())), $key);
+
         }
         catch(\Exception $e)
         {
             if($e->getMessage() == 'Encryption failure')
             {
                 //bad key;
-                return $this->json([
+                return new JsonResponse([
                     'status' => 'Note doesn\'t exist or has expired.'
                 ], $status = 404);
+            }
+            else
+            {
+                return new JsonResponse([
+                    'status' => $e->getMessage()
+                ], $status = 500);
             }
         }
 
@@ -135,7 +156,7 @@ class NoteController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->json([
+        return new JsonResponse([
             'decrypted' => $decrypted,
             'was_deleted' => $deleteOnRead
         ]);

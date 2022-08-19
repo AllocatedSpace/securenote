@@ -1,0 +1,33 @@
+#main-container {
+    min-height: 100vh;
+}
+
+#header {
+    font-size: 140%;
+}
+
+#footer {
+    font-size: 95%;
+}
+
+#header, #footer {
+    background-color: black;
+    color: white;
+}
+
+#container-note-view {
+    .loading-temporary {
+
+    }
+
+    .loading-error {
+
+    }
+
+    .secretnote-group {
+
+        &.hidden {
+            visibility: hidden;
+        }
+    }
+}
