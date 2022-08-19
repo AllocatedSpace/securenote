@@ -19,12 +19,18 @@ $(function() {
     $('#container-note-view').each(function(){
         //after page loads, we look at hash, and post it to /n/{guid} - payload: hash=hash
 
-        $.post(window.location.origin + window.location.pathname, {hash: (window.location.hash).replace('#', '')}, function(data){
+        $.post(window.location.origin + window.location.pathname, {key: (window.location.hash).replace('#', '')}, function(data){
 
+
+            if(data.was_deleted) {
+                $('.loading-error').text('This note has just self destructed... To die, to sleep, No more...').fadeIn();
+            }
             
             $('textarea#secretnote').text(data.decrypted).autogrow();
     
             $('.secretnote-group').removeClass('hidden');
+
+           
 
         }, "json")
         .fail(function(xhr, status, error) {
@@ -65,8 +71,13 @@ $(function() {
 
             $.post(window.location.origin + window.location.pathname, data, function(data){
 
+
+                var a = $('<a />')
+                    .attr('href', data.link)
+                    .text(data.link);
             
-                $('.saved-link-display').text(data.link);
+                $('.saved-link-display').html('<strong>Link: </strong> ');
+                a.appendTo($('.saved-link-display'));
     
             }, "json")
             .fail(function(xhr, status, error) {

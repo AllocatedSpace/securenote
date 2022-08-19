@@ -102,7 +102,7 @@ class NoteController extends AbstractController
     public function read(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
     {
 
-        $key = $request->request->get('hash'); //POST
+        $key = $request->request->get('key'); //POST
         
 
         if(!$request->isXmlHttpRequest() || !preg_match('~^[a-z0-9]{26}$~', $key) || !preg_match('~^[a-z0-9]{26}$~', $guid))

@@ -7,12 +7,25 @@
 }
 
 #footer {
-    font-size: 95%;
+    font-size: 80%;
 }
 
 #header, #footer {
-    background-color: black;
+    //background-color: #a5a5a5;
+    background-color: rgb(43, 43, 43);
     color: white;
+
+    a {
+        color: white;
+        &:hover,
+        &:active {
+            color: rgb(211, 211, 211)
+        }
+    }
+}
+
+#footer {
+    background-color: rgb(43, 43, 43);
 }
 
 #container-note-view {
