@@ -1,3 +1,20 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+
+app_lucky_number:
+    path: /lucky/number
+    controller: App\Controller\LuckyController::number
+
+app_note_test:
+    path: /n/test
+    controller: App\Controller\NoteController::test
+
+app_note_create:
+    path: /n/create
+    controller: App\Controller\NoteController::create
+
+app_note_read:
+    path: /n/{guid}
+    controller: App\Controller\NoteController::read
