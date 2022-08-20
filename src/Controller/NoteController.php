@@ -19,6 +19,7 @@ class NoteController extends AbstractController
     {
         $guid = NoteGUID::uniqidReal();
         $key = NoteGUID::uniqidReal();
+        
 
 
         $message = 'Lorem ipsum solar dot et!';
@@ -177,7 +178,7 @@ class NoteController extends AbstractController
             ], $status = 403);
         }
         // recaptcha
-        
+
 
         $keyHash = $request->request->get('keyHash'); //POST
         $confirmDestroy =  $request->request->get('confirmDestroy') == '1';
