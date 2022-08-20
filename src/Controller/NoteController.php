@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Note;
 use App\Service\SaferCrypto;
 use App\Service\NoteGUID;
+use App\Service\Cron;
 // ...
 
 class NoteController extends AbstractController
@@ -54,9 +55,17 @@ class NoteController extends AbstractController
     {
         $GOOGLE_RECAPTCHA_SITE_KEY = $this->getParameter('app.GOOGLE_RECAPTCHA_SITE_KEY');
         
-        return $this->render('note/view.html.twig', [
+        $response = $this->render('note/view.html.twig', [
            'GOOGLE_RECAPTCHA_SITE_KEY' => $GOOGLE_RECAPTCHA_SITE_KEY
         ]);
+
+        $response->setPublic();
+        $response->setMaxAge(14400); //4 hours
+
+        // (optional) set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     public function getNote(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
@@ -83,6 +92,8 @@ class NoteController extends AbstractController
             ], $status = 403);
         }
         // recaptcha
+
+        $this->tryCron($request);
 
 
         $keyHash = $request->request->get('keyHash'); //POST
@@ -179,6 +190,8 @@ class NoteController extends AbstractController
         }
         // recaptcha
 
+        $this->tryCron($request);
+
 
         $keyHash = $request->request->get('keyHash'); //POST
         $confirmDestroy =  $request->request->get('confirmDestroy') == '1';
@@ -244,6 +257,15 @@ class NoteController extends AbstractController
         ]);
     }
 
+    public function tryCron(Request $request)
+    {
+        if(mt_rand(1, 100) < 10)
+        {
+            $REAL_CRON_KEY = $this->getParameter('app.CRON_KEY');
+            Cron::startCron($REAL_CRON_KEY, $request);
+        }
+    }
+
     //
 
     public function storeNote(ManagerRegistry $doctrine, Request $request): JsonResponse
@@ -271,6 +293,8 @@ class NoteController extends AbstractController
             ], $status = 403);
         }
         // recaptcha
+
+        $this->tryCron($request);
 
 
         $guid = NoteGUID::uniqidReal();
@@ -408,6 +432,28 @@ class NoteController extends AbstractController
         return new JsonResponse([
             'decrypted' => $decrypted,
             'was_deleted' => $deleteOnRead
+        ]);
+        
+    }
+
+    public function cron(ManagerRegistry $doctrine, Request $request, string $cronkey): JsonResponse
+    {
+
+        //sleep(8); for TIMEOUT testing
+
+        $REAL_CRON_KEY = $this->getParameter('app.CRON_KEY');
+
+        if($REAL_CRON_KEY != $cronkey)
+        {
+            return new JsonResponse([
+                'status' => 'Forbidden'
+            ], $status = 403);
+        }
+
+        $deleted = $doctrine->getRepository(Note::class)->destroyExpired();
+       
+        return new JsonResponse([
+            'success' => true
         ]);
         
     }

@@ -6,6 +6,7 @@
 parameters:
     app.GOOGLE_RECAPTCHA_SITE_KEY: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     app.GOOGLE_RECAPTCHA_SECRET: '%env(GOOGLE_RECAPTCHA_SECRET)%'
+    app.CRON_KEY: '%env(CRON_KEY)%'
 
 services:
     # default configuration for services in *this* file

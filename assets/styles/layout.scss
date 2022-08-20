@@ -93,3 +93,7 @@
 .saved-link-display a {
     word-wrap: break-word;
 }
+
+textarea#secretnote {
+    overflow: auto !important;
+}

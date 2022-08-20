@@ -13,12 +13,28 @@ class PageController extends AbstractController
 
     public function howItWorks(): Response
     {
-        return $this->render('static/howitworks.html.twig', []);
+        $response = $this->render('static/howitworks.html.twig', []);
+
+        $response->setPublic();
+        $response->setMaxAge(14400); //4 hours
+
+        // (optional) set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     public function privacy(): Response
     {
-        return $this->render('static/privacy.html.twig', []);
+        $response = $this->render('static/privacy.html.twig', []);
+
+        $response->setPublic();
+        $response->setMaxAge(14400); //4 hours
+
+        // (optional) set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     

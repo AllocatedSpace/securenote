@@ -39,3 +39,8 @@ app_note_manual_delete:
     path: /delete/n/{guid}
     controller: App\Controller\NoteController::deleteNote
     methods: POST
+
+app_note_cron:
+    path: /cron/{cronkey}
+    controller: App\Controller\NoteController::cron
+    methods: GET

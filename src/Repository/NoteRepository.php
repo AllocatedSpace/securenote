@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Note;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Types\Types;
 
 /**
  * @extends ServiceEntityRepository<Note>
@@ -37,6 +38,21 @@ class NoteRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+
+    public function destroyExpired()
+    {
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'UPDATE note set encrypted = :encrypted, destroyed = CURRENT_TIMESTAMP() where expire < :expired and destroyed is null';
+
+        $paramValues = array('encrypted' => '', 'expired' => new \DateTimeImmutable());
+        $paramTypes = array('encrypted' => \PDO::PARAM_STR, 'expired' => Types::DATETIME_IMMUTABLE);
+        
+        $conn->executeUpdate($sql, $paramValues, $paramTypes);
+
     }
 
 //    /**

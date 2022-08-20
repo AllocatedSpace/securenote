@@ -57,8 +57,9 @@ $(function() {
                             (async () => {
                                 try {
                                     var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
-                                    $('textarea#secretnote').text(decryptedText).autogrow();
-                                    $('.secretnote-group').fadeIn('fast');
+                                    
+                                    $('.secretnote-group').show();
+                                    $('textarea#secretnote').show().text(decryptedText).autogrow(); //triggerHandler('change');
 
                                     $('.loading-error').text("The note is now destroyed. Make sure to copy it before you leave this page, it's gone forever.").fadeIn('fast');
                                     $('.alert-warning.confirmation-required').fadeOut('fast');
@@ -66,6 +67,8 @@ $(function() {
                                     if(data.offer_delete) {
                                         $('#delete-note').fadeIn('fast');
                                     }
+
+                                    
 
                                     gtag('event', 'confirm-destroy-note', { 'event_category': 'notes', 'event_label': 'Read and Destroy' });
 
@@ -209,8 +212,9 @@ $(function() {
                                     //decrypt and show
                                     try {
                                         var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
-                                        $('textarea#secretnote').text(decryptedText).autogrow();
-                                        $('.secretnote-group').removeClass('hidden');
+                                        $('.secretnote-group').show();
+                                        $('textarea#secretnote').text(decryptedText).autogrow(); //.triggerHandler('change');
+                                        
 
                                         if(data.offer_delete) {
                                             $('#delete-note').fadeIn('fast');
@@ -440,6 +444,7 @@ $(function() {
 
             var update = function(event)
             {
+                
                 var times = function(string, number)
                 {
                     for (var i=0, r=''; i<number; i++) r += string;
