@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.GOOGLE_RECAPTCHA_SITE_KEY: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+    app.GOOGLE_RECAPTCHA_SECRET: '%env(GOOGLE_RECAPTCHA_SECRET)%'
 
 services:
     # default configuration for services in *this* file

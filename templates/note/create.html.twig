@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block title %}Create Secure Note{% endblock %}
 
+
+{% block recaptchascript %}<script src="https://www.google.com/recaptcha/api.js?render={{ GOOGLE_RECAPTCHA_SITE_KEY }}"></script>{% endblock %}
+{% block envvariables %}<meta name="GOOGLE_RECAPTCHA_SITE_KEY" value="{{ GOOGLE_RECAPTCHA_SITE_KEY }}">{% endblock %}
+
 {% block body %}
 <div class="container" id="container-note-create">
     <div class="row">

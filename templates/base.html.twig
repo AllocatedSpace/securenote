@@ -13,6 +13,8 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+        {% block recaptchascript %}{% endblock %}
+        {% block envvariables %}{% endblock %}
     </head>
     <body>
         <div id="main-container" class="d-flex flex-column justify-content-start">
@@ -46,3 +48,11 @@
         </div>
     </body>
 </html>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9BJ869PPBF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9BJ869PPBF');
+</script>

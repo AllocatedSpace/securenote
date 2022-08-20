@@ -37,24 +37,52 @@ class NoteController extends AbstractController
             }
         }
 
+        $GOOGLE_RECAPTCHA_SITE_KEY = $this->getParameter('app.GOOGLE_RECAPTCHA_SITE_KEY');
+
         return $this->render('note/test.html.twig', [
             'guid' => $guid,
             'key' => $key,
             'encrypted' => base64_encode($encrypted),
             'decrypted' => $decrypted,
-            'decryptedFail' => base64_encode($decryptedFail)
+            'decryptedFail' => base64_encode($decryptedFail),
+            'GOOGLE_RECAPTCHA_SITE_KEY' => $GOOGLE_RECAPTCHA_SITE_KEY
         ]);
     }
 
     public function viewIndex(): Response
     {
+        $GOOGLE_RECAPTCHA_SITE_KEY = $this->getParameter('app.GOOGLE_RECAPTCHA_SITE_KEY');
+        
         return $this->render('note/view.html.twig', [
-           
+           'GOOGLE_RECAPTCHA_SITE_KEY' => $GOOGLE_RECAPTCHA_SITE_KEY
         ]);
     }
 
     public function getNote(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
     {
+
+        $GOOGLE_RECAPTCHA_SECRET = $this->getParameter('app.GOOGLE_RECAPTCHA_SECRET');
+        $recaptchaToken = $request->request->get('recaptchaToken'); 
+
+        $recaptcha = new \ReCaptcha\ReCaptcha($GOOGLE_RECAPTCHA_SECRET);
+        $resp = $recaptcha->setExpectedHostname($request->server->get('HTTP_HOST'))
+                        ->setExpectedAction('readNote')
+                        ->setScoreThreshold(0.5)
+                        ->verify($recaptchaToken, 
+                            $request->server->get('HTTP_CF_CONNECTING_IP') ? 
+                            $request->server->get('HTTP_CF_CONNECTING_IP') : 
+                            $request->server->get('REMOTE_ADDR'));
+
+        if ($resp->isSuccess()) {
+            // Verified!
+        } else {
+            $errors = $resp->getErrorCodes();
+            return new JsonResponse([
+                'status' => json_encode($errors)
+            ], $status = 403);
+        }
+        // recaptcha
+
 
         $keyHash = $request->request->get('keyHash'); //POST
         $destroyOnReadConfirmed =  $request->request->get('confirmDestroy') == '1';
@@ -128,6 +156,29 @@ class NoteController extends AbstractController
     public function deleteNote(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
     {
 
+        $GOOGLE_RECAPTCHA_SECRET = $this->getParameter('app.GOOGLE_RECAPTCHA_SECRET');
+        $recaptchaToken = $request->request->get('recaptchaToken'); 
+
+        $recaptcha = new \ReCaptcha\ReCaptcha($GOOGLE_RECAPTCHA_SECRET);
+        $resp = $recaptcha->setExpectedHostname($request->server->get('HTTP_HOST'))
+                        ->setExpectedAction('deleteNote')
+                        ->setScoreThreshold(0.5)
+                        ->verify($recaptchaToken, 
+                            $request->server->get('HTTP_CF_CONNECTING_IP') ? 
+                            $request->server->get('HTTP_CF_CONNECTING_IP') : 
+                            $request->server->get('REMOTE_ADDR'));
+
+        if ($resp->isSuccess()) {
+            // Verified!
+        } else {
+            $errors = $resp->getErrorCodes();
+            return new JsonResponse([
+                'status' => json_encode($errors)
+            ], $status = 403);
+        }
+        // recaptcha
+        
+
         $keyHash = $request->request->get('keyHash'); //POST
         $confirmDestroy =  $request->request->get('confirmDestroy') == '1';
                 
@@ -184,8 +235,11 @@ class NoteController extends AbstractController
 
     public function createView(ManagerRegistry $doctrine, Request $request): Response
     {
+
+        $GOOGLE_RECAPTCHA_SITE_KEY = $this->getParameter('app.GOOGLE_RECAPTCHA_SITE_KEY');
+        
         return $this->render('note/create.html.twig', [
-           
+           'GOOGLE_RECAPTCHA_SITE_KEY' => $GOOGLE_RECAPTCHA_SITE_KEY
         ]);
     }
 
@@ -193,6 +247,31 @@ class NoteController extends AbstractController
 
     public function storeNote(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
+
+
+        $GOOGLE_RECAPTCHA_SECRET = $this->getParameter('app.GOOGLE_RECAPTCHA_SECRET');
+        $recaptchaToken = $request->request->get('recaptchaToken'); 
+
+        $recaptcha = new \ReCaptcha\ReCaptcha($GOOGLE_RECAPTCHA_SECRET);
+        $resp = $recaptcha->setExpectedHostname($request->server->get('HTTP_HOST'))
+                        ->setExpectedAction('createNote')
+                        ->setScoreThreshold(0.5)
+                        ->verify($recaptchaToken, 
+                            $request->server->get('HTTP_CF_CONNECTING_IP') ? 
+                            $request->server->get('HTTP_CF_CONNECTING_IP') : 
+                            $request->server->get('REMOTE_ADDR'));
+
+        if ($resp->isSuccess()) {
+            // Verified!
+        } else {
+            $errors = $resp->getErrorCodes();
+            return new JsonResponse([
+                'status' => json_encode($errors)
+            ], $status = 403);
+        }
+        // recaptcha
+
+
         $guid = NoteGUID::uniqidReal();
 
         $encrypted = $request->request->get('encrypted'); 
