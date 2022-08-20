@@ -8,8 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=NoteRepository::class)
  * @ORM\Table(indexes={
+ *  @ORM\Index(name="guidkeyhash", columns={"guid", "keyhash"}),
  *  @ORM\Index(name="guid", columns={"guid"}),
- *  @ORM\Index(name="expire", columns={"expire"})
+ *  @ORM\Index(name="expire", columns={"expire"}),
+ *  @ORM\Index(name="keyhash", columns={"keyhash"})
  * })
  */
 class Note
@@ -40,6 +42,21 @@ class Note
      * @ORM\Column(type="datetime")
      */
     private $expire;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $destroyed;
+
+    /**
+     * @ORM\Column(type="string", length=64)
+     */
+    private $keyhash;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $allowDelete;
 
     public function getId(): ?int
     {
@@ -90,6 +107,42 @@ class Note
     public function setExpire(\DateTimeInterface $expire): self
     {
         $this->expire = $expire;
+
+        return $this;
+    }
+
+    public function getDestroyed(): ?\DateTimeInterface
+    {
+        return $this->destroyed;
+    }
+
+    public function setDestroyed(?\DateTimeInterface $destroyed): self
+    {
+        $this->destroyed = $destroyed;
+
+        return $this;
+    }
+
+    public function getKeyhash(): ?string
+    {
+        return $this->keyhash;
+    }
+
+    public function setKeyhash(string $keyhash): self
+    {
+        $this->keyhash = $keyhash;
+
+        return $this;
+    }
+
+    public function isAllowDelete(): ?bool
+    {
+        return $this->allowDelete;
+    }
+
+    public function setAllowDelete(bool $allowDelete): self
+    {
+        $this->allowDelete = $allowDelete;
 
         return $this;
     }

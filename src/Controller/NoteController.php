@@ -63,7 +63,7 @@ class NoteController extends AbstractController
     }
 
 
-    public function createSave(ManagerRegistry $doctrine, Request $request): JsonResponse
+    public function createSaveServerEncryption(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
         $guid = NoteGUID::uniqidReal();
         $key = NoteGUID::uniqidReal();
@@ -75,8 +75,6 @@ class NoteController extends AbstractController
         $encrypted = SaferCrypto::encrypt($securenote, $key);
 
         $entityManager = $doctrine->getManager();
-
-        
 
         $note = new Note();
         $note->setGuid($guid);
@@ -99,7 +97,7 @@ class NoteController extends AbstractController
     }
 
 
-    public function read(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
+    public function readServerDecryption(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
     {
 
         $key = $request->request->get('key'); //POST

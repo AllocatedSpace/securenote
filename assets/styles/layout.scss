@@ -12,21 +12,26 @@
 
 #header, #footer {
     //background-color: #a5a5a5;
-    background-color: rgb(43, 43, 43);
-    color: white;
+    //background-color: rgb(180 180 180);
+    background-color: rgb(240 240 240);
+    color: rgb(23, 23, 23);
 
     a {
-        color: white;
+        color: rgb(23, 23, 23);
         &:hover,
         &:active {
-            color: rgb(211, 211, 211)
+            color: rgb(82, 82, 82)
         }
+    }
+
+    .col.header a {
+        text-decoration: none;
     }
 }
 
-#footer {
-    background-color: rgb(43, 43, 43);
-}
+// #footer {
+//     background-color: rgb(43, 43, 43);
+// }
 
 #container-note-view {
     .loading-temporary {

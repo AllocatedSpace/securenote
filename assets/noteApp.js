@@ -1,0 +1,171 @@
+async function getHash(str) {
+
+    const msgUint8 = new TextEncoder().encode(str); 
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);           // hash the message
+    const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+    return hashHex;
+    //return await crypto.subtle.digest("SHA-256", str2ab(str));
+}
+
+function prepareTextForEncryption(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
+
+function prepareb64AfterDecryption(b64) {
+    return decodeURIComponent(escape(window.atob(b64)))
+}
+
+function ab2str(buf) {
+    return new TextDecoder().decode(buf);
+}
+
+function str2ab(str) {
+    const buf = new ArrayBuffer(str.length);
+    const bufView = new Uint8Array(buf);
+    for (let i = 0, strLen = str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+}
+
+// https://stackoverflow.com/a/21797381/9014097
+function b642ab(base64) {
+    var binary_string = window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+
+function ab2b64( buffer ) { //_arrayBufferToBase64
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    return window.btoa( binary );
+}
+
+function randomString(length) {
+    var charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var i;
+    var result = "";
+    var isOpera = Object.prototype.toString.call(window.opera) == '[object Opera]';
+
+    if(window.crypto && window.crypto.getRandomValues){
+        var values = new Uint32Array(length);
+        window.crypto.getRandomValues(values);
+
+        for(i=0; i<length; i++) {
+            result += charset[values[i] % charset.length];
+        }
+
+        return result;
+
+    } else if(isOpera) {//Opera's Math.random is secure, see http://lists.w3.org/Archives/Public/public-webcrypto/2013Jan/0063.html
+        for(i=0; i<length; i++) {
+            result += charset[Math.floor(Math.random()*charset.length)];
+        }
+        
+        return result;
+    }
+    else throw new Error("Your browser sucks and can't generate secure random numbers");
+}
+
+
+async function encrypt(sourceText, keyData, iv) {
+    var key = await importKey(keyData);
+    var data = str2ab(sourceText);
+
+    //console.log('encrypting', sourceText, ab2str(data));
+
+    //try {
+        return await crypto.subtle.encrypt(
+        { name: "AES-CBC", iv: iv },
+        key,
+        data //ArrayBuffer of data you want to encrypt
+        );
+    // } catch (ex) {
+    //     console.error("Error: Name: ", ex.name, ", Message: ", ex.message);
+    // }
+        
+}
+
+async function decrypt(encrypted, keyData, iv) {
+    var key = await importKey(keyData);
+    var data = b642ab(encrypted);
+
+    //console.log('decrypting', encrypted, ab2str(data));
+
+    //try {
+        return await crypto.subtle.decrypt(
+        { name: "AES-CBC", iv: iv },
+        key,
+        data
+        );
+    // } catch (ex) {
+    //     console.error("Error: Name: ", ex.name, ", Message: ", ex.message);
+    // }
+}
+
+async function importKey(keyData) {
+    var key = await crypto.subtle.importKey(
+        "raw",
+        keyData,
+        { name: "AES-CBC" },
+        true,
+        ["decrypt", "encrypt"]
+    );
+
+    return key;
+}
+
+
+
+
+export default class SecureNote {
+
+    constructor(keyText) {
+        this.setKey(keyText);
+    }
+
+    setKey(keyText) {
+
+        this.iv = new Uint8Array(16).buffer;
+
+        if(!keyText) {
+            keyText = randomString(32)
+        }
+
+        this.keyText = keyText;
+        this.keyData = str2ab(this.keyText);
+    }
+
+    getKey() {
+        return this.keyText;
+    }
+
+    async getKeyHash() {
+        return await getHash(this.keyText);
+    }
+
+    async encrypt(text) { //returns b64
+        var sourceText = prepareTextForEncryption(text);
+        var encrypted = await encrypt(sourceText, this.keyData, this.iv);
+
+        return ab2b64(encrypted); 
+        // console.log('encrypted', encrypted);
+        // $('#tst-encrypted').text( ab2b64(encrypted) );
+    }
+
+    async decrypt(encryptedb64) { //returns string, the decrypted text
+        var decrypted = await decrypt(encryptedb64, this.keyData, this.iv);
+        var decryptedText = prepareb64AfterDecryption(ab2str(decrypted));
+    
+        return decryptedText; 
+    }
+}

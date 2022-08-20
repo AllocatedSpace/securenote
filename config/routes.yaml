@@ -11,6 +11,11 @@ app_note_create_view:
     controller: App\Controller\NoteController::createView
     methods: GET
 
+app_note_index:
+    path: /
+    controller: App\Controller\NoteController::createView
+    methods: GET
+
 app_note_create_save:
     path: /n/create
     controller: App\Controller\NoteController::createSave

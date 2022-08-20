@@ -14,6 +14,8 @@ import './styles/app.scss';
 
 
 import $ from 'jquery';
+import SecureNote from './noteApp.js';
+
 $(function() {
     
     $('#container-note-view').each(function(){
@@ -91,6 +93,34 @@ $(function() {
                     
             });
         });
+    });
+
+
+
+    $('#container-note-test #btn-encrypt').on('click', function(){
+
+        (async () => {
+            var encryptingNoteApp = new SecureNote();
+            $('#tst-key').text(encryptingNoteApp.getKey());
+
+            var encryptingKeyHash = await encryptingNoteApp.getKeyHash();
+            $('#tst-key-hash').text(encryptingKeyHash);
+
+            var encryptedB65 = await encryptingNoteApp.encrypt( $('#tst-source').val() );
+            $('#tst-encrypted').text(encryptedB65);
+
+            // test descrypt:
+
+            var decryptingNoteApp = new SecureNote($('#tst-key').text()); //pass the key
+        
+            var decryptingKeyHash = await decryptingNoteApp.getKeyHash();
+            $('#tst-key-hash-2').text(decryptingKeyHash);
+            
+            var decryptedText = await decryptingNoteApp.decrypt( $('#tst-encrypted').val() );
+            $('#tst-decrypted').text(decryptedText);
+
+        })();
+
     });
 
 });
@@ -203,221 +233,3 @@ function randomString(length) {
 }
 
 
-function prepareTextForEncryption(str) {
-    return window.btoa(unescape(encodeURIComponent(str)));
-}
-
-function prepareb64AfterDecryption(b64) {
-    return decodeURIComponent(escape(window.atob(b64)))
-}
-
-$('#container-note-test #btn-encrypt').on('click', function(){
-
-    //var newKey = window.crypto.randomUUID().replace('-', '');
-
-
-    ///ALWAYS atob before encrypted, and btoa after decrypting
-
-    var newKey = randomString(32);
-    $('#tst-key').text(newKey);
-    
-
-    var sourceText = prepareTextForEncryption($('#tst-source').val());
-    
-    var keyData = str2ab(newKey);
-
-
-    var iv = new Uint8Array(16).buffer;
-    var ciphertext = b642ab("i4+WxNH8XYMnAm7RsRkfOw==");
-
-    (async () => {
-
-        var keyHash = await getHash(newKey);
-        $('#tst-key-hash').text((keyHash));
-        
-        var encrypted = await encrypt(sourceText);
-        console.log('encrypted', encrypted);
-        $('#tst-encrypted').text( ab2b64(encrypted) );
-        //
-
-        var decrypted = await decrypt( $('#tst-encrypted').text() );
-        var decryptedText = prepareb64AfterDecryption(ab2str(decrypted));
-
-        $('#tst-decrypted').text(decryptedText);
-
-        console.log('ab2str decrypted', decryptedText);
-        var decryptedStr = new TextDecoder().decode(decrypted);
-        console.log('TextDecoder decrypted', decryptedStr);
-
-
-    })();
-
-    async function encrypt(sourceText) {
-        var key = await importKey();
-        var data = str2ab(sourceText);
-
-        console.log('encrypting', sourceText, ab2str(data));
-
-        try {
-            return await crypto.subtle.encrypt(
-            { name: "AES-CBC", iv: iv },
-            key,
-            data //ArrayBuffer of data you want to encrypt
-            );
-        } catch (ex) {
-            console.error("Error: Name: ", ex.name, ", Message: ", ex.message);
-        }
-           
-    }
-
-    async function decrypt(encrypted) {
-        var key = await importKey();
-        var data = b642ab(encrypted);
-
-        console.log('decrypting', encrypted, ab2str(data));
-
-        try {
-            return await crypto.subtle.decrypt(
-            { name: "AES-CBC", iv: iv },
-            key,
-            data
-            );
-        } catch (ex) {
-            console.error("Error: Name: ", ex.name, ", Message: ", ex.message);
-        }
-    }
-
-    async function importKey() {
-        var key = await crypto.subtle.importKey(
-            "raw",
-            keyData,
-            { name: "AES-CBC" },
-            true,
-            ["decrypt", "encrypt"]
-        );
-        return key;
-    }
-
-    // Helper -----------------------------------------------
-
-    async function getHash(str) {
-
-        const msgUint8 = new TextEncoder().encode(str); 
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);           // hash the message
-        const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
-        const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-        return hashHex;
-       //return await crypto.subtle.digest("SHA-256", str2ab(str));
-    }
-
-    // https://stackoverflow.com/a/11058858
-
-    function ab2str(buf) {
-        //return String.fromCharCode.apply(null, new Uint16Array(buf));
-        return new TextDecoder().decode(buf);
-    }
-
-    function str2ab(str) {
-        const buf = new ArrayBuffer(str.length);
-        const bufView = new Uint8Array(buf);
-        for (let i = 0, strLen = str.length; i < strLen; i++) {
-            bufView[i] = str.charCodeAt(i);
-        }
-        return buf;
-    }
-
-    // https://stackoverflow.com/a/21797381/9014097
-    function b642ab(base64) {
-        var binary_string = window.atob(base64);
-        var len = binary_string.length;
-        var bytes = new Uint8Array(len);
-        for (var i = 0; i < len; i++) {
-            bytes[i] = binary_string.charCodeAt(i);
-        }
-        return bytes.buffer;
-    }
-
-    function ab2b64( buffer ) { //_arrayBufferToBase64
-        var binary = '';
-        var bytes = new Uint8Array( buffer );
-        var len = bytes.byteLength;
-        for (var i = 0; i < len; i++) {
-            binary += String.fromCharCode( bytes[ i ] );
-        }
-        return window.btoa( binary );
-    }
-
-
-    // window.crypto.subtle.generateKey(
-    // {
-    //     name: "AES-GCM",
-    //     length: 256, //can be  128, 192, or 256
-    // },
-    //     false, //whether the key is extractable (i.e. can be used in exportKey)
-    //     ["encrypt", "decrypt"] //can "encrypt", "decrypt", "wrapKey", or "unwrapKey"
-    // )
-    // .then(function(key){
-    //     //returns a key object
-    //     console.log(key);
-    //     $('#tst-key').text(key);
-
-    //     var data = $('#tst-source').text();
-
-    //     window.crypto.subtle.encrypt(
-    //         {
-    //             name: "AES-GCM",
-
-    //             //Don't re-use initialization vectors!
-    //             //Always generate a new iv every time your encrypt!
-    //             //Recommended to use 12 bytes length
-    //             iv: window.crypto.getRandomValues(new Uint8Array(12)),
-
-    //             //Additional authentication data (optional)
-    //             additionalData: ArrayBuffer,
-
-    //             //Tag length (optional)
-    //             tagLength: 128, //can be 32, 64, 96, 104, 112, 120 or 128 (default)
-    //         },
-    //         key, //from generateKey or importKey above
-    //         data //ArrayBuffer of data you want to encrypt
-    //     )
-    //     .then(function(encrypted){
-    //         //returns an ArrayBuffer containing the encrypted data
-    //         console.log(new Uint8Array(encrypted));
-            
-    //         $('#tst-encrypted').text(btoa(new Uint8Array(encrypted)));
-
-
-    //         window.crypto.subtle.decrypt(
-    //             {
-    //                 name: "AES-GCM",
-    //                 iv: ArrayBuffer(12), //The initialization vector you used to encrypt
-    //                 additionalData: ArrayBuffer, //The addtionalData you used to encrypt (if any)
-    //                 tagLength: 128, //The tagLength you used to encrypt (if any)
-    //             },
-    //             key, //from generateKey or importKey above
-    //             data //ArrayBuffer of the data
-    //         )
-    //         .then(function(decrypted){
-    //             //returns an ArrayBuffer containing the decrypted data
-    //             console.log(new Uint8Array(decrypted));
-    //         })
-    //         .catch(function(err){
-    //             console.error(err);
-    //         });
-
-
-
-
-    //     })
-    //     .catch(function(err){
-    //         console.error(err);
-    //     });
-
-
-    // })
-    // .catch(function(err){
-    //     console.error(err);
-    // });
-
-});
