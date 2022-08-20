@@ -58,7 +58,7 @@ $(function() {
                                 try {
                                     var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
                                     $('textarea#secretnote').text(decryptedText).autogrow();
-                                    $('.secretnote-group').removeClass('hidden');
+                                    $('.secretnote-group').fadeIn('fast');
 
                                     $('.loading-error').text("The note is now destroyed. Make sure to copy it before you leave this page, it's gone forever.").fadeIn('fast');
                                     $('.alert-warning.confirmation-required').fadeOut('fast');
@@ -66,6 +66,9 @@ $(function() {
                                     if(data.offer_delete) {
                                         $('#delete-note').fadeIn('fast');
                                     }
+
+                                    gtag('event', 'confirm-destroy-note', { 'event_category': 'notes', 'event_label': 'Read and Destroy' });
+
 
                                 } catch (ex) {
                                     $('.loading-error').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message);
@@ -127,6 +130,9 @@ $(function() {
                             }
 
                             $('#delete-note').fadeOut();
+
+                            gtag('event', 'manual-destroy-note', { 'event_category': 'notes', 'event_label': 'Manual Delete' });
+                            
 
                         
                         
@@ -193,6 +199,12 @@ $(function() {
                                 $('#delete-note').fadeOut('fast');
             
                             } else {
+
+
+
+                                gtag('event', 'read-note', { 'event_category': 'notes', 'event_label': 'Read Note' });
+                               
+
                                 (async () => {
                                     //decrypt and show
                                     try {
@@ -236,6 +248,9 @@ $(function() {
                             }
             
                             $('.loading-error').show();
+
+
+                            gtag('event', '404-read-note', { 'event_category': 'notes', 'event_label': 'Error Reading Note; expired or doesnt exist' });
                             
                         })
                         .always(function() {
@@ -312,7 +327,10 @@ $(function() {
                         };
         
                         $('.saved-link-display').text('Saving...').fadeIn('fast');
-        
+                        
+
+                        gtag('event', 'create-note', { 'event_category': 'notes', 'event_label': 'Create Note' });
+
         
                         $.post(window.location.origin + window.location.pathname, data, function(data){
         
@@ -327,6 +345,8 @@ $(function() {
         
                             $('#create-form-controls').fadeOut('fast');
                             $('#create-a-new-note').fadeIn('fast');
+
+                           
         
                 
                         }, "json")
@@ -338,6 +358,8 @@ $(function() {
                             } catch(e) {
                                 $('.saved-link-display').text('Unexpected response from server');
                             }
+
+                           
                                 
                         });
         
@@ -460,31 +482,5 @@ $(function() {
 
     $('textarea.autogrow').css('overflow', 'hidden').autogrow();
 });
-
-
-
-function randomString(length) {
-    var charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var i;
-    var result = "";
-    var isOpera = Object.prototype.toString.call(window.opera) == '[object Opera]';
-
-    if(window.crypto && window.crypto.getRandomValues){
-        var values = new Uint32Array(length);
-        window.crypto.getRandomValues(values);
-        for(i=0; i<length; i++) {
-            result += charset[values[i] % charset.length];
-        }
-        return result;
-
-    } else if(isOpera)//Opera's Math.random is secure, see http://lists.w3.org/Archives/Public/public-webcrypto/2013Jan/0063.html
-    {
-        for(i=0; i<length; i++) {
-            result += charset[Math.floor(Math.random()*charset.length)];
-        }
-        return result;
-    }
-    else throw new Error("Your browser sucks and can't generate secure random numbers");
-}
 
 
