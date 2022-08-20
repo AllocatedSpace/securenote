@@ -17,16 +17,22 @@
                     
                 </div>
 
+                <div class="alert alert-warning confirmation-required" role="alert" style="display:none">
+                    <p>This secure note is a self-destructing one which will be destroyed when it's read. Are you sure you want to read it?</p>
+                    <button id="confirm-destroy" type="button" class="btn btn-success">Read and Destroy It</button>
+                    <button id="confirm-cancel" type="button" class="btn btn-danger">Cancel</button>
+                </div>
+
 
                 <div class="form-group secretnote-group hidden" style="visibility: none;">
-                    <label for="secretnote">Secret</label>
+                    <label for="secretnote">Secure Note</label>
                     <textarea class="form-control autogrow-afterload" id="secretnote" rows="5" readonly></textarea>
                 </div>
 
                 
             </form>
 
-            <a href="/n/create" class="d-block mt-4">Create a New Note</a>
+            <input type="button" class="btn btn-danger mt-4" value="Delete" id="delete-note" style="display:none" />
 
 
 

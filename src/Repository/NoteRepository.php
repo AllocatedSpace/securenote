@@ -63,4 +63,16 @@ class NoteRepository extends ServiceEntityRepository
            ->getOneOrNullResult()
        ;
    }
+
+   public function findOneByGuidAndKeyHash($guid, $keyHash): ?Note
+   {
+       return $this->createQueryBuilder('n')
+           ->andWhere('n.guid = :val')
+           ->andWhere('n.keyhash = :hash')
+           ->setParameter('val', $guid)
+           ->setParameter('hash', $keyHash)
+           ->getQuery()
+           ->getOneOrNullResult()
+       ;
+   }
 }

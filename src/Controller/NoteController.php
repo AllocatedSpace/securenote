@@ -47,11 +47,139 @@ class NoteController extends AbstractController
         ]);
     }
 
-    public function view(): Response
+    public function viewIndex(): Response
     {
         return $this->render('note/view.html.twig', [
            
         ]);
+    }
+
+    public function getNote(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
+    {
+
+        $keyHash = $request->request->get('keyHash'); //POST
+        $destroyOnReadConfirmed =  $request->request->get('confirmDestroy') == '1';
+        
+
+        if(!$request->isXmlHttpRequest() || !preg_match('~^[a-z0-9]{64}$~', $keyHash) || !preg_match('~^[a-z0-9]{26}$~', $guid))
+        {
+            return new JsonResponse([
+                'status' => 'Bad Request'
+            ], $status = 400);
+        }        
+
+        $note = $doctrine->getRepository(Note::class)->findOneByGuidAndKeyHash($guid, $keyHash);
+        
+        if(!$note)
+        {
+            return new JsonResponse([
+                'status' => 'Note doesn\'t exist or has expired.'
+            ], $status = 404);
+        }
+
+
+        //if destroyed, return so
+        if($destroyedOn = $note->getDestroyed())
+        {
+            return new JsonResponse([
+                'status' => 'The note was destroyed.',
+                'destroyedOn' => $destroyedOn->format('c')
+            ], $status = 404);
+        }
+
+        if($note->isDestroyOnRead() && !$destroyOnReadConfirmed)
+        {
+            //ask to confirm because it will delete after reading
+            return new JsonResponse([
+                'status' => false,
+                'confirmDestroy' => true
+            ], $status = 200);
+
+        }
+
+
+        //die('the note?' . $note->getId() . '; the hash: ' . $key . '; the data: ' . $note->getEncrypted());
+
+        //we will just return the data. and whether or not it's been destroyed or will continue to live
+
+        $encryptedData = stream_get_contents($note->getEncrypted());
+
+        $deleteOnRead = $note->isDestroyOnRead();
+        if($deleteOnRead)
+        {
+            $entityManager = $doctrine->getManager();
+            //$entityManager->remove($note);
+            $note->setEncrypted('');
+            $note->setDestroyed(new \DateTime('now'));
+
+            $entityManager->flush();
+        }
+
+
+        return new JsonResponse([
+            'encrypted' => $encryptedData,
+            'was_deleted' => $deleteOnRead,
+            'expires' => $note->getExpire()->format('c'),
+            'offer_delete' => $note->isAllowDelete() == true,
+            'destroyed' => $note->getDestroyed() ? $note->getDestroyed()->format('c') : false
+        ]);
+        
+    }
+
+    public function deleteNote(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
+    {
+
+        $keyHash = $request->request->get('keyHash'); //POST
+        $confirmDestroy =  $request->request->get('confirmDestroy') == '1';
+                
+
+        if(!$confirmDestroy || !$request->isXmlHttpRequest() || !preg_match('~^[a-z0-9]{64}$~', $keyHash) || !preg_match('~^[a-z0-9]{26}$~', $guid))
+        {
+            return new JsonResponse([
+                'status' => 'Bad Request'
+            ], $status = 400);
+        }        
+
+        $note = $doctrine->getRepository(Note::class)->findOneByGuidAndKeyHash($guid, $keyHash);
+        
+        if(!$note)
+        {
+            return new JsonResponse([
+                'status' => 'Note doesn\'t exist or has expired.'
+            ], $status = 404);
+        }
+
+
+        //if destroyed, return so
+        if($destroyedOn = $note->getDestroyed())
+        {
+            return new JsonResponse([
+                'status' => 'The note was destroyed.',
+                'destroyedOn' => $destroyedOn->format('c')
+            ], $status = 404);
+        }
+
+        if(!$note->isAllowDelete())
+        {
+            return new JsonResponse([
+                'status' => 'The note cannot be deleted manually.',
+                'expires' => $note->getExpire()->format('c')
+            ], $status = 404);
+        }
+        else
+        {
+            $entityManager = $doctrine->getManager();
+            $note->setEncrypted('');
+            $note->setDestroyed(new \DateTime('now'));
+            $entityManager->flush();
+
+            return new JsonResponse([
+                'destroyed' => $note->getDestroyed() ? $note->getDestroyed()->format('c') : false
+            ], $status = 200);
+
+        }
+
+        
     }
 
 
@@ -59,6 +187,42 @@ class NoteController extends AbstractController
     {
         return $this->render('note/create.html.twig', [
            
+        ]);
+    }
+
+    //
+
+    public function storeNote(ManagerRegistry $doctrine, Request $request): JsonResponse
+    {
+        $guid = NoteGUID::uniqidReal();
+
+        $encrypted = $request->request->get('encrypted'); 
+        $keyhash = $request->request->get('keyhash'); 
+        $destroyOnRead = $request->request->get('destroyonread') == '1';
+        $daysToLive = max(1, min(30, intval($request->request->get('daystolive')))); //1 - 30
+        $allowDelete = $request->request->get('allowdelete') == '1'; 
+
+        $entityManager = $doctrine->getManager();
+
+        $note = new Note();
+        $note->setGuid($guid);
+        $note->setEncrypted($encrypted);
+        $note->setKeyhash($keyhash);
+        $note->setDestroyOnRead($destroyOnRead);
+        $note->setAllowDelete($allowDelete);
+
+        $expire = new \DateTime(); 
+        $expire->add(\DateInterval::createFromDateString($daysToLive . ' day'));
+        $note->setExpire($expire);
+
+        $entityManager->persist($note);
+        $entityManager->flush();
+
+
+        $httpHost = $request->server->get('HTTP_HOST');
+
+        return new JsonResponse([
+            'link' => "https://{$httpHost}/n/{$guid}",
         ]);
     }
 

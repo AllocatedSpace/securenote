@@ -15,43 +15,213 @@ import './styles/app.scss';
 
 import $ from 'jquery';
 import SecureNote from './noteApp.js';
+import moment from 'moment';
+
 
 $(function() {
     
     $('#container-note-view').each(function(){
-        //after page loads, we look at hash, and post it to /n/{guid} - payload: hash=hash
 
-        $.post(window.location.origin + window.location.pathname, {key: (window.location.hash).replace('#', '')}, function(data){
+        (async () => {
+        
+            //calculate a hash on the key (the location hash), and request encrypted data from the
+            //server by sending GUID and the keyHash - if both do not match we'll not get any data back.
 
+            var urlHash = (window.location.hash).replace('#', '');
+            var decryptingNoteApp = new SecureNote(urlHash); //pass the key
+            var keyHash = await decryptingNoteApp.getKeyHash();
 
-            if(data.was_deleted) {
-                $('.loading-error').text('This note has just self destructed... To die, to sleep, No more...').fadeIn();
-            }
+            $(window).on('hashchange', function() {
+                (async () => {
+                    urlHash = (window.location.hash).replace('#', '');
+                    decryptingNoteApp.setKey(urlHash); //pass the key
+                    keyHash = await decryptingNoteApp.getKeyHash();
+
+                    loadData();
+                })();
+            });
+
             
-            $('textarea#secretnote').text(data.decrypted).autogrow();
+            // var decryptedText = await decryptingNoteApp.decrypt( $('#tst-encrypted').val() );
+            // $('#tst-decrypted').text(decryptedText);
+
+            $('#confirm-destroy').on('click', function(){
+
+
+                $.post(window.location.origin + window.location.pathname, {keyHash: keyHash, confirmDestroy: '1'}, function(data){
+                    //decrypt and show
+                    (async () => {
+                        try {
+                            var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
+                            $('textarea#secretnote').text(decryptedText).autogrow();
+                            $('.secretnote-group').removeClass('hidden');
+
+                            $('.loading-error').text("The note is now destroyed. Make sure to copy it before you leave this page, it's gone forever.").fadeIn('fast');
+                            $('.alert-warning.confirmation-required').fadeOut('fast');
+
+                            if(data.offer_delete) {
+                                $('#delete-note').fadeIn('fast');
+                            }
+
+                        } catch (ex) {
+                            $('.loading-error').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message);
+                            $('.loading-error').show();
+                        }
+                    })();
+                }, "json")
+                .fail(function(xhr, status, error) {
     
-            $('.secretnote-group').removeClass('hidden');
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        $('.loading-error').text(response.status).fadeIn('fast');
+    
+                        if(response.detail) {
+                            //probably an actual server error (symfony error in json?)
+                            $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).fadeIn('fast');
+                        }
+    
+                        if(response.destroyedOn) {
+                            $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').fadeIn('fast');
+                        }
+    
+                    } catch(e) {
+                        alert( error + ' : ' + xhr.responseText );
+    
+                        $('.loading-error').text('Unexpected response').fadeIn('fast');
+                    }
+    
+                    $('.loading-error').show();
+                    
+                })
+                .always(function() {
+                    $('.loading-temporary').hide();
+                });;
+            });
 
-           
+            $('#confirm-cancel').on('click', function(){
+                window.location = '/';
+            });
 
-        }, "json")
-        .fail(function(xhr, status, error) {
+            $('#delete-note').on('click', function(){
+                $.post(window.location.origin + '/delete' + window.location.pathname, {keyHash: keyHash, confirmDestroy: '1'}, function(data){
+                    //manually delete
 
-            try {
-                var response = JSON.parse(xhr.responseText);
-                $('.loading-error').text(response.status);
-            } catch(e) {
-                alert( error + ' : ' + xhr.responseText );
+                    if(data.destroyed) {
+                        $('.loading-error').text("The note was deleted. Make sure to copy it before you leave this page, it's gone forever.").fadeIn('fast');
+                    } else {
+                        $('.loading-error').text("The note was probably deleted; there may have been an error. There was an unexpected response from the server, but no error info.").fadeIn('fast');
+                    }
 
-                $('.loading-error').text('Unexpected response');
+                    $('#delete-note').fadeOut();
+
+                   
+                   
+                }, "json")
+                .fail(function(xhr, status, error) {
+    
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        $('.loading-error').text(response.status).fadeIn('fast');
+    
+                        if(response.detail) {
+                            //probably an actual server error (symfony error in json?)
+                            $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).fadeIn('fast');
+                        }
+    
+                        if(response.destroyedOn) {
+                            $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').fadeIn('fast');
+                        }
+    
+                    } catch(e) {
+                        alert( error + ' : ' + xhr.responseText );
+    
+                        $('.loading-error').text('Unexpected response').fadeIn('fast');
+                    }
+    
+                    $('.loading-error').show();
+                    
+                })
+                .always(function() {
+                    $('.loading-temporary').hide();
+                });;
+            });
+
+
+            function loadData() {
+
+                $('.loading-error').fadeOut('fast');
+                $('.alert-warning.confirmation-required').fadeOut('fast');
+
+                $.post(window.location.origin + window.location.pathname, {keyHash: keyHash}, function(data){
+
+
+                    if(data.was_deleted) {
+                        $('.loading-error').text('This note has just self destructed... To die, to sleep, No more...').fadeIn();
+                    } else if(data.expires) {
+                        $('.loading-error').text('This note will expire ' + moment(data.expires).from() + '.').fadeIn();
+                    }
+    
+                    //if the note will self-destruct, we have to ask for confirmation first
+                    if(data.confirmDestroy) {
+    
+                        $('.alert-warning.confirmation-required').fadeIn('fast');
+
+                        $('#delete-note').fadeOut('fast');
+    
+                    } else {
+                        (async () => {
+                            //decrypt and show
+                            try {
+                                var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
+                                $('textarea#secretnote').text(decryptedText).autogrow();
+                                $('.secretnote-group').removeClass('hidden');
+
+                                if(data.offer_delete) {
+                                    $('#delete-note').fadeIn('fast');
+                                }
+
+                            } catch (ex) {
+                                $('.loading-error').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message);
+                                $('.loading-error').show();
+                            }
+                        })();
+                        
+                    }
+                
+    
+                }, "json")
+                .fail(function(xhr, status, error) {
+    
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        $('.loading-error').text(response.status).fadeIn('fast');
+    
+                        if(response.detail) {
+                            //probably an actual server error (symfony error in json?)
+                            $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).fadeIn('fast');
+                        }
+    
+                        if(response.destroyedOn) {
+                            $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').fadeIn('fast');
+                        }
+    
+                    } catch(e) {
+                        alert( error + ' : ' + xhr.responseText );
+    
+                        $('.loading-error').text('Unexpected response').fadeIn('fast');
+                    }
+    
+                    $('.loading-error').show();
+                    
+                })
+                .always(function() {
+                    $('.loading-temporary').hide();
+                });;
             }
 
-            $('.loading-error').show();
-            
-        })
-        .always(function() {
-            $('.loading-temporary').hide();
-        });;
+            loadData();
+
+        })();
 
     });
 
@@ -59,39 +229,63 @@ $(function() {
     $('#container-note-create').each(function(){
         $('form#form-note-create').on('submit', function(e){
 
-            var $form = $(this);
             e.preventDefault();
+            var $form = $(this);
 
-            var data = {
-                securenote: $form.find('textarea[name="secretnote"]').val(),
-                destroyonread: $form.find('input[name="destroy-on-read"]').is(':checked') ? 1: 0,
-                daystolive: $form.find('input[name="ttl"]').val()
-            };
+            (async () => {
 
-            $('.saved-link-display').text('Saving...').fadeIn('fast');
+                var encryptingNoteApp = new SecureNote();
+                var key = encryptingNoteApp.getKey();
+                var keyHash = await encryptingNoteApp.getKeyHash();
 
+                var encryptionError = false;
 
-            $.post(window.location.origin + window.location.pathname, data, function(data){
-
-
-                var a = $('<a />')
-                    .attr('href', data.link)
-                    .text(data.link);
-            
-                $('.saved-link-display').html('<strong>Link: </strong> ');
-                a.appendTo($('.saved-link-display'));
-    
-            }, "json")
-            .fail(function(xhr, status, error) {
-    
+                var encryptedB65 = '';
+                
                 try {
-                    var response = JSON.parse(xhr.responseText);
-                    $('.saved-link-display').text(response.status);
-                } catch(e) {
-                    $('.saved-link-display').text('Unexpected response from server');
+                    encryptedB65 = await encryptingNoteApp.encrypt( $form.find('textarea[name="secretnote"]').val());
+                } catch (ex) {
+                    $('.saved-link-display').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message);
+                    return;
                 }
-                    
-            });
+                
+
+                
+
+                var data = {
+                    encrypted: encryptedB65,
+                    keyhash: keyHash,
+                    destroyonread: $form.find('input[name="destroy-on-read"]').is(':checked') ? 1: 0,
+                    daystolive: $form.find('input[name="ttl"]').val(),
+                    allowdelete: $form.find('input[name="allow-delete"]').is(':checked') ? 1: 0
+                };
+
+                $('.saved-link-display').text('Saving...').fadeIn('fast');
+
+
+                $.post(window.location.origin + window.location.pathname, data, function(data){
+
+
+                    var a = $('<a />')
+                        .attr('href', data.link + '#' + key)
+                        .text(data.link + '#' + key);
+                
+                    $('.saved-link-display').html('<strong>Link: </strong> ');
+                    a.appendTo($('.saved-link-display'));
+        
+                }, "json")
+                .fail(function(xhr, status, error) {
+        
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        $('.saved-link-display').text(response.status);
+                    } catch(e) {
+                        $('.saved-link-display').text('Unexpected response from server');
+                    }
+                        
+                });
+
+            })();
         });
     });
 

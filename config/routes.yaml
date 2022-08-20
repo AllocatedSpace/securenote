@@ -3,13 +3,8 @@
 #    controller: App\Controller\DefaultController::index
 
 app_note_test:
-    path: /n/test
+    path: /test
     controller: App\Controller\NoteController::test
-
-app_note_create_view:
-    path: /n/create
-    controller: App\Controller\NoteController::createView
-    methods: GET
 
 app_note_index:
     path: /
@@ -17,18 +12,21 @@ app_note_index:
     methods: GET
 
 app_note_create_save:
-    path: /n/create
-    controller: App\Controller\NoteController::createSave
+    path: /
+    controller: App\Controller\NoteController::storeNote
     methods: POST
 
 app_note_view:
     path: /n/{guid}
-    controller: App\Controller\NoteController::view
+    controller: App\Controller\NoteController::viewIndex
     methods: GET
 
 app_note_read:
     path: /n/{guid}
-    controller: App\Controller\NoteController::read
+    controller: App\Controller\NoteController::getNote
     methods: POST
 
-
+app_note_manual_delete:
+    path: /delete/n/{guid}
+    controller: App\Controller\NoteController::deleteNote
+    methods: POST
