@@ -227,6 +227,26 @@ $(function() {
 
 
     $('#container-note-create').each(function(){
+
+        
+        $('#create-a-new-note').on('click', function(e){
+            e.preventDefault();
+            $('.saved-link-display').fadeOut('fast');
+            $('#create-form-controls').fadeIn('fast');
+            $('#create-a-new-note').fadeOut('fast');
+
+        });
+
+        $('#destroy-on-read').on('change', function(){
+            if($(this).is(':checked')) {
+                //copy original check of allow-delete
+                $('#allow-delete').data('checked-state', $('#allow-delete').is(':checked'));
+                $('#allow-delete').prop( "checked", false ).prop( "disabled", true );
+            } else {
+                $('#allow-delete').prop( "checked", $('#allow-delete').data('checked-state') ).prop( "disabled", false );
+            }
+        });
+
         $('form#form-note-create').on('submit', function(e){
 
             e.preventDefault();
@@ -272,6 +292,11 @@ $(function() {
                 
                     $('.saved-link-display').html('<strong>Link: </strong> ');
                     a.appendTo($('.saved-link-display'));
+
+
+                    $('#create-form-controls').fadeOut('fast');
+                    $('#create-a-new-note').fadeIn('fast');
+
         
                 }, "json")
                 .fail(function(xhr, status, error) {
