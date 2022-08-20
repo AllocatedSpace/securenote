@@ -1,5 +1,42 @@
-<p>guid: {{ guid }}</p>
-<p>key: {{ key }}</p>
-<p>encrypted: {{ encrypted }}</p>
-<p>decrypted: {{ decrypted }}</p>
-<p>decryptedFail: {{ decryptedFail }}</p>
+{% extends 'base.html.twig' %}
+{% block title %}Read Note{% endblock %}
+
+{% block body %}
+<div class="container" id="container-note-test">
+    <div class="row">
+        <div class="col">
+            
+            
+            <p>guid: {{ guid }}</p>
+            <p>key: {{ key }}</p>
+            <p>encrypted: {{ encrypted }}</p>
+            <p>decrypted: {{ decrypted }}</p>
+            <p>decryptedFail: {{ decryptedFail }}</p>
+
+            src<br />
+            <textarea id="tst-source"></textarea><br />
+            key<br />
+            <textarea id="tst-key" readonly></textarea><br />
+            encrypted<br />
+            <textarea id="tst-encrypted" readonly></textarea><br />
+            decrypted<br />
+            <textarea id="tst-decrypted" readonly></textarea><br >
+
+            <button id="btn-encrypt">Gen Key, Encrypt, Decrypt</button>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+
+
+
+
+
+</script>
+
+{% endblock %}
