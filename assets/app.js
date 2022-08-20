@@ -203,14 +203,25 @@ function randomString(length) {
 }
 
 
+function prepareTextForEncryption(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
+
+function prepareb64AfterDecryption(b64) {
+    return decodeURIComponent(escape(window.atob(b64)))
+}
+
 $('#container-note-test #btn-encrypt').on('click', function(){
 
     //var newKey = window.crypto.randomUUID().replace('-', '');
 
-    var newKey = randomString(16);
+
+    ///ALWAYS atob before encrypted, and btoa after decrypting
+
+    var newKey = randomString(32);
     $('#tst-key').text(newKey);
 
-    var sourceText = $('#tst-source').text();
+    var sourceText = prepareTextForEncryption($('#tst-source').val());
     
 
     var keyData = str2ab(newKey);
@@ -220,13 +231,14 @@ $('#container-note-test #btn-encrypt').on('click', function(){
     var ciphertext = b642ab("i4+WxNH8XYMnAm7RsRkfOw==");
 
     (async () => {
+        
         var encrypted = await encrypt(sourceText);
-
+        console.log('encrypted', encrypted);
         $('#tst-encrypted').text( ab2b64(encrypted) );
         //
 
-        var decrypted = await decrypt( b642ab($('#tst-encrypted').text()) );
-        var decryptedText = ab2str(decrypted);
+        var decrypted = await decrypt( $('#tst-encrypted').text() );
+        var decryptedText = prepareb64AfterDecryption(ab2str(decrypted));
 
         $('#tst-decrypted').text(decryptedText);
 
@@ -239,12 +251,15 @@ $('#container-note-test #btn-encrypt').on('click', function(){
 
     async function encrypt(sourceText) {
         var key = await importKey();
+        var data = str2ab(sourceText);
+
+        console.log('encrypting', sourceText, ab2str(data));
 
         try {
             return await crypto.subtle.encrypt(
             { name: "AES-CBC", iv: iv },
             key,
-            str2ab(sourceText) //ArrayBuffer of data you want to encrypt
+            data //ArrayBuffer of data you want to encrypt
             );
         } catch (ex) {
             console.error("Error: Name: ", ex.name, ", Message: ", ex.message);
@@ -254,12 +269,15 @@ $('#container-note-test #btn-encrypt').on('click', function(){
 
     async function decrypt(encrypted) {
         var key = await importKey();
+        var data = b642ab(encrypted);
+
+        console.log('decrypting', encrypted, ab2str(data));
 
         try {
             return await crypto.subtle.decrypt(
             { name: "AES-CBC", iv: iv },
             key,
-            encrypted
+            data
             );
         } catch (ex) {
             console.error("Error: Name: ", ex.name, ", Message: ", ex.message);
@@ -282,7 +300,8 @@ $('#container-note-test #btn-encrypt').on('click', function(){
     // https://stackoverflow.com/a/11058858
 
     function ab2str(buf) {
-        return String.fromCharCode.apply(null, new Uint16Array(buf));
+        //return String.fromCharCode.apply(null, new Uint16Array(buf));
+        return new TextDecoder().decode(buf);
     }
 
     function str2ab(str) {
