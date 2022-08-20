@@ -13,9 +13,12 @@ class PageController extends AbstractController
 
     public function howItWorks(): Response
     {
-       
-
         return $this->render('static/howitworks.html.twig', []);
+    }
+
+    public function privacy(): Response
+    {
+        return $this->render('static/privacy.html.twig', []);
     }
 
     

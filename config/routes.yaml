@@ -7,6 +7,10 @@ page_howitworks:
     path: /how-it-works
     controller: App\Controller\PageController::howItWorks
 
+page_privacy:
+    path: /privacy
+    controller: App\Controller\PageController::privacy
+
 app_note_test:
     path: /note-crypto-test
     controller: App\Controller\NoteController::test
