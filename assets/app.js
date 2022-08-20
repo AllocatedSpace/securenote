@@ -220,10 +220,10 @@ $('#container-note-test #btn-encrypt').on('click', function(){
 
     var newKey = randomString(32);
     $('#tst-key').text(newKey);
+    
 
     var sourceText = prepareTextForEncryption($('#tst-source').val());
     
-
     var keyData = str2ab(newKey);
 
 
@@ -231,6 +231,9 @@ $('#container-note-test #btn-encrypt').on('click', function(){
     var ciphertext = b642ab("i4+WxNH8XYMnAm7RsRkfOw==");
 
     (async () => {
+
+        var keyHash = await getHash(newKey);
+        $('#tst-key-hash').text((keyHash));
         
         var encrypted = await encrypt(sourceText);
         console.log('encrypted', encrypted);
@@ -296,6 +299,16 @@ $('#container-note-test #btn-encrypt').on('click', function(){
     }
 
     // Helper -----------------------------------------------
+
+    async function getHash(str) {
+
+        const msgUint8 = new TextEncoder().encode(str); 
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);           // hash the message
+        const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
+        const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+        return hashHex;
+       //return await crypto.subtle.digest("SHA-256", str2ab(str));
+    }
 
     // https://stackoverflow.com/a/11058858
 
