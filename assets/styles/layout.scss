@@ -7,7 +7,12 @@
 }
 
 #footer {
-    font-size: 80%;
+
+    padding-bottom: 3em;
+
+    a {
+        font-weight: bold;
+    }
 }
 
 #header, #footer {

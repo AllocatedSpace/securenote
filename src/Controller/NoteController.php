@@ -201,6 +201,14 @@ class NoteController extends AbstractController
         $daysToLive = max(1, min(30, intval($request->request->get('daystolive')))); //1 - 30
         $allowDelete = $request->request->get('allowdelete') == '1'; 
 
+
+        if(strlen($encrypted) > 512000) //
+        {
+            return new JsonResponse([
+                'status' => "Encrypted data is too long (over 500KB)"
+            ], $status = 403);
+        }
+
         $entityManager = $doctrine->getManager();
 
         $note = new Note();

@@ -8,7 +8,7 @@ page_howitworks:
     controller: App\Controller\PageController::howItWorks
 
 app_note_test:
-    path: /test
+    path: /note-crypto-test
     controller: App\Controller\NoteController::test
 
 app_note_index:
