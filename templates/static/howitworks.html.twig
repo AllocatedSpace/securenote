@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+{% block title %}How it Works{% endblock %}
+
+{% block body %}
+<div class="container" id="container-note-create">
+    <div class="row">
+        <div class="col">
+            
+            <h1>How it Works</h1>
+
+            <h2 class="mt-3">Summary</h2>
+            <p>Encryption and Decryption happens directly in your browser. To store the note, your browser sends the encrypted data and a 
+                <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">one-way SHA-256 hash</a> of the key.</p>
+            
+            <p>Since the key is never sent to the server, it's not possible for the server can't decrypt the note. 
+                The key is stored in the link as the Location Hash (the part after the "#"). Browsers don't send the location hash in their request to the server, 
+                so the server never gets a copy of your key.</p>
+
+            <p>A <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">one-way SHA-256 hash</a> of the key is also sent to the server when asking for
+            the encrypted data so that it can decrypt it. This is done to prevent bots from automatically scraping the ecrypted data (to bruteforce decrypt later) and also
+            to ensure the "self-destruct" option is respected. The browser doesn't get a copy of the encrypted data from the server unless it both knows the note's GUID and can prove
+        it has the key to decrypt it (by providing a key hash) with out sharing the key with the server to do so since the server stored both the encrypted data as well as the key-hash</p>
+            
+            <h2 class="mt-5">Detailed Process</h2>
+            
+            <h3>Browser</h3>
+            <ol>
+                <li>Generates a random key-string using <code><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues">window.crypto.getRandomValues()</a></code> - length: 32 bytes</li>
+                <li>Algorithm: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> 
+                    - Using the random key-string, your browser generates a AES-CBC key using <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey" target="_blank"><code>crypto.subtle.importKey()</code></a> </li>
+                <li>Algorithm: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> 
+                    - Encrypts the note text using <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt"><code>crypto.subtle.encrypt()</code></a></li>
+                <li>Generates a  <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">SHA-256 hash</a> of the key-string</li>
+            </ol>
+
+            <h3>Transportation</h3>
+            <ol>
+                <li>Browser sends the encrypted data and the SHA-256 key-hash to the server (and options like EXPIRE, SELF-DESTRUCT, DELETABLE, .etc)</li>
+            </ol>
+
+            <h3>Server</h3>
+            <ol>
+                <li>Server generates a random 23 byte alphanumeric GUID (unrelated to the secure-note data) using 
+                    <a target="_blank" href="https://www.php.net/manual/en/function.openssl-random-pseudo-bytes.php"><code>openssl_random_pseudo_bytes()</code></a>
+                    /<a target="_blank" href="https://www.php.net/manual/en/function.random-bytes.php"><code>random_bytes()</code></a></li>
+                <li>Server stores a note record, which has the following fields: GUID, EncryptedNote, SHA-256 key-hash</li>
+            </ol>
+
+            <h3>Browser - when GUID is found, and key-hash is correct</h3>
+            <ol>
+                <li>Browser loads URI like /n/GUID</li>
+                <li>Browser extracts the key-string from the current <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"></a><code>window.location.hash</code></li>
+                <li>Generates a <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">SHA-256 hash</a> of the key-string</li>
+                <li>Browser makes an XHR POST request to the same parent request URI (/n/GUID) with the payload of: <code>{keyHash}</code></li>
+                <li>Server finds up a secure-note that has that GUID (parsed from the URI) and keyHash (parsed from POST data)</li>
+                <li>If found, and is self-destructing:</li>
+                    <ol>
+                    <li>Server returns <code>{confirmReadAndDestroy}</code></li>
+                    <li>Browser presents a button, if the user clicks it repeats this step but with an extra element in the payload: <code>{..., confirmDestroy: true}</code></li>
+                    </ol>
+                <li>If found, and is self-destructing, and <code>{..., confirmDestroy: true}</code> is in the payload:</li>
+                    <ol>
+                    <li>Server purges the encrypted-data from the record, and stores the date of destruction</li>
+                    <li>Server returns <code>{encryptedData, expireDate, ...)}</code></li>
+                    </ol>
+                <li>if found, but destroyed (no encrypted data):</li>
+                    <ol>
+                    <li>Returns a 404 and a date of destruction </li>
+                    </ol>
+                <li>If the server returned encryptedData:</li>
+                    <ol>
+                        <li>Algorithm: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> 
+                            - Using the key-string that's parsed from the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"></a><code>window.location.hash</code>
+                            , your browser generates a AES-CBC key using <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey" target="_blank"><code>crypto.subtle.importKey()</code></a> </li>
+                        <li>Algorithm: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> 
+                            - Decrypts the encryptedData (recieved from the server) using <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt"><code>crypto.subtle.decrypt()</code></a></li>
+                    </ol>
+
+            </ol>
+            
+    
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -2,6 +2,11 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
+
+page_howitworks:
+    path: /how-it-works
+    controller: App\Controller\PageController::howItWorks
+
 app_note_test:
     path: /test
     controller: App\Controller\NoteController::test
