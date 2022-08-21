@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}Create Secure Note{% endblock %}
+{% block title %}Create a Secure Note to share with anyone - securenote.ca{% endblock %}
 
 
 {% block recaptchascript %}<script src="https://www.google.com/recaptcha/api.js?render={{ GOOGLE_RECAPTCHA_SITE_KEY }}"></script>{% endblock %}
@@ -19,6 +19,7 @@
             </div>
 
             <div id="create-form-controls"  class="content-block">
+                <h1>New Note</h1>
                 <div class="form-row d-flex align-items-center mb-3">
                     <div class="form-group ">
                         <label for="ttl">Maximum Days to Live (if not deleted sooner)</label>
