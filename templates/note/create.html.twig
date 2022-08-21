@@ -16,7 +16,33 @@
 
             <div class="alert alert-warning saved-link-display" role="alert" style="display:none">
                 
+                <div class="d-lg-flex flex-column flex-md-row justify-content-between">
+                    <span class="align-self-center"><strong>Link: </strong></span>
+
+                    <span class="align-self-center" id="saved-link"></span>
+
+                    <div class="copy-saved-link-container">
+                        <input type="text" value="..." id="saved-link-to-copy" class="visually-hidden">
+                        <div class="nbtooltip mt-2 mt-md-0">
+                            <button class="cpy-from btn btn-primary" data-inputpath="#saved-link-to-copy" >
+                                <span class="tooltiptext">Copy Link to clipboard</span>
+                                <span class="tooltiptext-upon-copy" style="display:none">Copied!</span>
+                                Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="saved-note-tips" class="mt-3 d-md-flex flex-column flex-md-row justify-content-center"></div>
+
             </div>
+
+
+            <div class="alert alert-warning status-updates" role="alert" style="display:none"></div>
+
+
+
 
             <div id="create-form-controls"  class="content-block">
                 <h1>New Note</h1>
@@ -56,7 +82,7 @@
             </div>
 
 
-            <button type="button" class="btn btn-primary mt-4" id="create-a-new-note" style="display:none">Create A New Secrete Note</button>
+            <!-- <button type="button" class="btn btn-primary mt-4" id="create-a-new-note" style="display:none">Create A New Secret Note</button> -->
 
             </form>
 

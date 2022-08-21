@@ -113,6 +113,18 @@
     word-wrap: break-word;
 }
 
+#saved-note-tips {
+    background: #efe3ba;
+    padding: 0.3em 1em;
+    border: 1px solid #dccfa2;
+    color: #7d6d38;
+
+    span {
+        display: block;
+        margin: 0 0.8em;
+    }
+}
+
 textarea#secretnote {
     overflow: auto !important;
 }

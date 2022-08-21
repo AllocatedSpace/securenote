@@ -277,9 +277,10 @@ $(function() {
         
         $('#create-a-new-note').on('click', function(e){
             e.preventDefault();
-            $('.saved-link-display').fadeOut('fast');
-            $('#create-form-controls').fadeIn('fast');
-            $('#create-a-new-note').fadeOut('fast');
+            $('.saved-link-display').hide();
+            $('.status-updates').hide();
+            $('#create-form-controls').hide();
+            $('#create-a-new-note').hide();
 
         });
 
@@ -316,7 +317,7 @@ $(function() {
                         try {
                             encryptedB65 = await encryptingNoteApp.encrypt( $form.find('textarea[name="secretnote"]').val());
                         } catch (ex) {
-                            $('.saved-link-display').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message);
+                            $('.status-updates').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message).show();
                             return;
                         }
                                         
@@ -330,7 +331,7 @@ $(function() {
                             recaptchaToken: recaptchaToken
                         };
         
-                        $('.saved-link-display').text('Saving...').fadeIn('fast');
+                        $('.status-updates').text('Saving...').show();
                         
 
                         gtag('event', 'create-note', { 'event_category': 'notes', 'event_label': 'Create Note' });
@@ -339,28 +340,55 @@ $(function() {
                         $.post(window.location.origin + window.location.pathname, data, function(data){
         
         
+                            $('#saved-link').html('');
+                            $('#saved-note-tips').html();
+
                             var a = $('<a />')
+                                //.attr('target', '_blank')
                                 .attr('href', data.link + '#' + key)
                                 .text(data.link + '#' + key);
-                        
-                            $('.saved-link-display').html('<strong>Link: </strong> ');
-                            a.appendTo($('.saved-link-display'));
-        
-        
-                            $('#create-form-controls').fadeOut('fast');
-                            $('#create-a-new-note').fadeIn('fast');
 
-                           
-        
+                            a.appendTo($('#saved-link'));
+
+                            $('#saved-link-to-copy').val(data.link + '#' + key);
+
+                            var toolTipElement = $('<span />');
+                            $('<div />').text('Copied Link!').appendTo(toolTipElement);
+
+                            $('<div />').html('&#8729; Max TTL: ' + $form.find('input[name="ttl"]').val() + ' days').appendTo(toolTipElement);
+
+                            if($form.find('input[name="destroy-on-read"]').is(':checked')) {
+                                $('<div />').html('&#8729; Self-destructs').appendTo(toolTipElement);
+                            }
+                            
+                            if($form.find('input[name="allow-delete"]').is(':checked')) {
+                                $('<div />').html('&#8729; Manually deleteable').appendTo(toolTipElement);
+                            }
+
+                            $('.saved-link-display .tooltiptext-upon-copy').html(toolTipElement.html());
+
+
+                            //other tips
+                            $('<span class="mb-md-1" />').html('<strong>Max TTL:</strong> ' + $form.find('input[name="ttl"]').val() + ' days').appendTo($('#saved-note-tips'));
+                            $('<span class="mb-md-1" />').html('<strong>Self Destructs when Read:</strong> ' + ($form.find('input[name="destroy-on-read"]').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
+                            $('<span class="mb-md-1" />').html('<strong>Manually Deletable:</strong> ' + ($form.find('input[name="allow-delete"]').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
+
+
+
+                            $('.status-updates').hide();
+                            $('.saved-link-display').show();
+                            $('#create-form-controls').hide();
+                            $('#create-a-new-note').hide();
+
                 
                         }, "json")
                         .fail(function(xhr, status, error) {
                 
                             try {
                                 var response = JSON.parse(xhr.responseText);
-                                $('.saved-link-display').text(response.status);
+                                $('.status-updates').text(response.status).show();
                             } catch(e) {
-                                $('.saved-link-display').text('Unexpected response from server');
+                                $('.status-updates').text('Unexpected response from server').show();
                             }
 
                            
@@ -402,6 +430,33 @@ $(function() {
 
         })();
 
+    });
+
+});
+
+
+$('button.cpy-from').each(function(){
+
+    var _this = $(this);
+
+    _this.on('click', function(e){
+        e.preventDefault();
+        var inputPath = $($(this).data('inputpath'));
+        var tooltip = $(this).find('.tooltiptext').first();    
+        var tooltipHTMLAfterCopy = $(this).find('.tooltiptext-upon-copy').first().html();
+        var copyText = inputPath[0]; //document.getElementById("myInput");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        
+        //var tooltip = document.getElementById("myTooltip");
+        tooltip.html(tooltipHTMLAfterCopy);
+    });
+
+    _this.on('mouseout', function(e){
+        //var tooltip = document.getElementById("myTooltip");
+        var tooltip = $(this).find('.tooltiptext').first();
+        tooltip.html("Copy Link to clipboard");
     });
 
 });

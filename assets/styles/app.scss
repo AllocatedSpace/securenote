@@ -32,10 +32,52 @@ $font-family-sans-serif:
 }
 
 body {
-    background-color: rgb(255 255 255);
-    color: rgb(44, 44, 44);
+  background-color: rgb(255 255 255);
+  color: rgb(44, 44, 44);
 }
 
 a {
   text-decoration: none;
+}
+
+
+
+
+
+.nbtooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.nbtooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.nbtooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.nbtooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }
