@@ -326,14 +326,14 @@ $(function() {
                             encrypted: encryptedB65,
                             keyhash: keyHash,
                             destroyonread: $form.find('input[name="destroy-on-read"]').is(':checked') ? 1: 0,
-                            daystolive: $form.find('input[name="ttl"]').val(),
+                            ttl: $form.find('select[name="ttl"] option:selected').attr('value'),
                             allowdelete: $form.find('input[name="allow-delete"]').is(':checked') ? 1: 0,
                             recaptchaToken: recaptchaToken
                         };
+
         
                         $('.status-updates').text('Saving...').show();
                         
-
                         gtag('event', 'create-note', { 'event_category': 'notes', 'event_label': 'Create Note' });
 
         
@@ -355,7 +355,7 @@ $(function() {
                             var toolTipElement = $('<span />');
                             $('<div />').text('Copied Link!').appendTo(toolTipElement);
 
-                            $('<div />').html('&#8729; Max TTL: ' + $form.find('input[name="ttl"]').val() + ' days').appendTo(toolTipElement);
+                            $('<div />').html('&#8729; Max TTL: ' + $form.find('select[name="ttl"] option:selected').text()).appendTo(toolTipElement);
 
                             if($form.find('input[name="destroy-on-read"]').is(':checked')) {
                                 $('<div />').html('&#8729; Self-destructs').appendTo(toolTipElement);
@@ -369,7 +369,7 @@ $(function() {
 
 
                             //other tips
-                            $('<span class="mb-md-1" />').html('<strong>Max TTL:</strong> ' + $form.find('input[name="ttl"]').val() + ' days').appendTo($('#saved-note-tips'));
+                            $('<span class="mb-md-1" />').html('<strong>Max TTL:</strong> ' + $form.find('select[name="ttl"] option:selected').text()).appendTo($('#saved-note-tips'));
                             $('<span class="mb-md-1" />').html('<strong>Self Destructs when Read:</strong> ' + ($form.find('input[name="destroy-on-read"]').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
                             $('<span class="mb-md-1" />').html('<strong>Manually Deletable:</strong> ' + ($form.find('input[name="allow-delete"]').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
 

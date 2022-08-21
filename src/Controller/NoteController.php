@@ -93,7 +93,7 @@ class NoteController extends AbstractController
         }
         // recaptcha
 
-        $this->tryCron($request);
+        $this->tryCron($doctrine, $request);
 
 
         $keyHash = $request->request->get('keyHash'); //POST
@@ -190,7 +190,7 @@ class NoteController extends AbstractController
         }
         // recaptcha
 
-        $this->tryCron($request);
+        $this->tryCron($doctrine, $request);
 
 
         $keyHash = $request->request->get('keyHash'); //POST
@@ -257,7 +257,7 @@ class NoteController extends AbstractController
         ]);
     }
 
-    public function tryCron(Request $request)
+    public function tryCron(ManagerRegistry $doctrine, Request $request)
     {
         if(mt_rand(1, 100) < 10)
         {
@@ -301,7 +301,7 @@ class NoteController extends AbstractController
         }
         // recaptcha
 
-        $this->tryCron($request);
+        $this->tryCron($doctrine, $request);
 
 
         $guid = NoteGUID::uniqidReal();
@@ -309,7 +309,68 @@ class NoteController extends AbstractController
         $encrypted = $request->request->get('encrypted'); 
         $keyhash = $request->request->get('keyhash'); 
         $destroyOnRead = $request->request->get('destroyonread') == '1';
-        $daysToLive = max(1, min(30, intval($request->request->get('daystolive')))); //1 - 30
+
+
+        $rawTTL = $request->request->get('ttl');
+        $TTLUnit = '';
+        $TTLValue = '';
+
+        if(!preg_match('~^[0-9]{1,2}[MHD]{1}$~', $rawTTL))
+        {
+            return new JsonResponse([
+                'status' => "Invalid Time-To-Live value provided."
+            ], $status = 403);
+        }
+
+        preg_match('~^([0-9]{1,2})([MHD]{1})$~', $rawTTL, $matches);
+
+        $TTLValue = $matches[1];
+        $TTLUnit = $matches[2];
+
+        if($TTLValue < 1)
+        {
+            return new JsonResponse([
+                'status' => "Invalid Time-To-Live value provided."
+            ], $status = 403);
+        }
+
+        if($TTLUnit == 'D')
+        { 
+            if($TTLValue > 31)
+            {
+                return new JsonResponse([
+                    'status' => "Invalid Time-To-Live value provided: max 31 days"
+                ], $status = 403);
+            }
+
+            $TTLUnit = "day";
+        }
+
+        if($TTLUnit == 'H')
+        { 
+            if($TTLValue > 24)
+            {
+                return new JsonResponse([
+                    'status' => "Invalid Time-To-Live value provided: max 24 hours"
+                ], $status = 403);
+            }
+
+            $TTLUnit = "hour";
+        }
+
+        if($TTLUnit == 'M')
+        { 
+            if($TTLValue > 60)
+            {
+                return new JsonResponse([
+                    'status' => "Invalid Time-To-Live value provided: max 60 minutes"
+                ], $status = 403);
+            }
+
+            $TTLUnit = "minute";
+        }
+
+       
         $allowDelete = $request->request->get('allowdelete') == '1'; 
 
 
@@ -330,7 +391,8 @@ class NoteController extends AbstractController
         $note->setAllowDelete($allowDelete);
 
         $expire = new \DateTime(); 
-        $expire->add(\DateInterval::createFromDateString($daysToLive . ' day'));
+        //$expire->add(\DateInterval::createFromDateString($daysToLive . ' day'));
+        $expire->add(\DateInterval::createFromDateString($TTLValue . ' ' . $TTLUnit));
         $note->setExpire($expire);
 
         $entityManager->persist($note);
