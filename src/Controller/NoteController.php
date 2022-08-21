@@ -262,7 +262,14 @@ class NoteController extends AbstractController
         if(mt_rand(1, 100) < 10)
         {
             $REAL_CRON_KEY = $this->getParameter('app.CRON_KEY');
-            Cron::startCron($REAL_CRON_KEY, $request);
+            
+            
+            // this has too much overhead when the DB is small,
+            // just do it directly for now
+            //Cron::startCron($REAL_CRON_KEY, $request); 
+
+            $doctrine->getRepository(Note::class)->destroyExpired();
+
         }
     }
 
