@@ -1,3 +1,5 @@
 User-agent: *
 Disallow: /n/
 Disallow: /legacy/
+
+Sitemap: https://securenote.ca/sitemap.xml
