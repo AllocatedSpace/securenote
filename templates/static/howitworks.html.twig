@@ -44,16 +44,16 @@
 
                 <h4>Server</h4>
                 <ol class="mb-3">
-                    <li>Server generates a random 23-byte alphanumeric GUID (unrelated to the secure-note data) using 
+                    <li>Server generates a random 26-byte alphanumeric GUID (unrelated to the secure-note data) using 
                         <a target="_blank" href="https://www.php.net/manual/en/function.openssl-random-pseudo-bytes.php"><code>openssl_random_pseudo_bytes()</code></a>
                         /<a target="_blank" href="https://www.php.net/manual/en/function.random-bytes.php"><code>random_bytes()</code></a></li>
                     <li>Server stores a note record, which has the following fields: <code>{guid, encryptedData, destroyOnRead, expire, destroyed, keyhash, allowDelete}</code></li>
-                    <li>Server returns the 23-byte alphanumeric GUID <code>{link: '/n/GUID'}</code></li>
+                    <li>Server returns the 26-byte alphanumeric GUID <code>{link: '/n/GUID'}</code></li>
                 </ol>
 
                 <h4>Browser - generates and shows a shareable link</h4>
                 <ol class="mb-3">
-                    <li>The 23-byte alphanumeric GUID is parsed from the returned data</li>
+                    <li>The 26-byte alphanumeric GUID is parsed from the returned data</li>
                     <li>The browser generates a shareable link to display on the screen by concatenating the GUID from the server, and a '#', and the keyString: <code>/n/guid#keystring</code></li>
                 </ol>
             </ul>
