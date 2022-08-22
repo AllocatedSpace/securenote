@@ -13,6 +13,10 @@ import './styles/app.scss';
 //import './bootstrap';
 
 
+require('bootstrap');
+import { Modal } from 'bootstrap';
+
+
 import $ from 'jquery';
 import SecureNote from './noteApp.js';
 import moment from 'moment';
@@ -176,8 +180,8 @@ $(function() {
 
             function loadData() {
 
-                $('.loading-error').fadeOut('fast');
-                $('.alert-warning.confirmation-required').fadeOut('fast');
+                $('.loading-error').hide();
+                $('.alert-warning.confirmation-required').hide();
 
 
                 var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
@@ -197,9 +201,9 @@ $(function() {
                             //if the note will self-destruct, we have to ask for confirmation first
                             if(data.confirmDestroy) {
             
-                                $('.alert-warning.confirmation-required').fadeIn('fast');
+                                $('.alert-warning.confirmation-required').show();
 
-                                $('#delete-note').fadeOut('fast');
+                                $('#delete-note').hide();
             
                             } else {
 
@@ -217,7 +221,7 @@ $(function() {
                                         
 
                                         if(data.offer_delete) {
-                                            $('#delete-note').fadeIn('fast');
+                                            $('#delete-note').show();
                                         }
 
                                     } catch (ex) {
@@ -234,21 +238,21 @@ $(function() {
             
                             try {
                                 var response = JSON.parse(xhr.responseText);
-                                $('.loading-error').text(response.status).fadeIn('fast');
+                                $('.loading-error').text(response.status).show();
             
                                 if(response.detail) {
                                     //probably an actual server error (symfony error in json?)
-                                    $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).fadeIn('fast');
+                                    $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).show();
                                 }
             
                                 if(response.destroyedOn) {
-                                    $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').fadeIn('fast');
+                                    $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').show();
                                 }
             
                             } catch(e) {
                                 alert( error + ' : ' + xhr.responseText );
             
-                                $('.loading-error').text('Unexpected response').fadeIn('fast');
+                                $('.loading-error').text('Unexpected response').show();
                             }
             
                             $('.loading-error').show();
@@ -274,15 +278,17 @@ $(function() {
 
     $('#container-note-create').each(function(){
 
-        
-        $('#create-a-new-note').on('click', function(e){
-            e.preventDefault();
-            $('.saved-link-display').hide();
-            $('.status-updates').hide();
-            $('#create-form-controls').hide();
-            $('#create-a-new-note').hide();
+        var savedNoteModal = new Modal(document.getElementById('createdNoteMdlDlg'), {backdrop: 'static'});
 
-        });
+        
+        // $('#create-a-new-note').on('click', function(e){
+        //     e.preventDefault();
+        //     //$('.saved-link-display').hide();
+        //     $('.status-updates').hide();
+        //     $('#create-form-controls').hide();
+        //     $('#create-a-new-note').hide();
+
+        // });
 
         $('#destroy-on-read').on('change', function(){
             if($(this).is(':checked')) {
@@ -298,13 +304,23 @@ $(function() {
 
             e.preventDefault();
             var $form = $(this);
+            var submitButton = $form.find('button[type="submit"]');
 
             var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
+
+            
+
+            submitButton.attr('disabled', true);
+            $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
+            $('.status-updates').removeClass('hidden');
+
 
             grecaptcha.ready(function() {
                 grecaptcha.execute(reCaptchaSiteKey, {action: 'createNote'}).then(function(recaptchaToken) {
 
                     (async () => {
+
+                        $('#status-updates-text').text('[Local] Creating key and calculating hash...').show();
 
                         var encryptingNoteApp = new SecureNote();
                         var key = encryptingNoteApp.getKey();
@@ -313,11 +329,14 @@ $(function() {
                         var encryptionError = false;
         
                         var encryptedB65 = '';
+
+                        $('#status-updates-text').text('[Local] Encrypting...').show();
                         
                         try {
                             encryptedB65 = await encryptingNoteApp.encrypt( $form.find('textarea[name="secretnote"]').val());
                         } catch (ex) {
-                            $('.status-updates').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message).show();
+                            submitButton.attr('disabled', false);
+                            $('#status-updates-text').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message).show();
                             return;
                         }
                                         
@@ -332,13 +351,15 @@ $(function() {
                         };
 
         
-                        $('.status-updates').text('Saving...').show();
+                        $('#status-updates-text').text('Uploading encrypted data to server for storage...').show();
                         
                         gtag('event', 'create-note', { 'event_category': 'notes', 'event_label': 'Create Note' });
 
         
                         $.post(window.location.origin + window.location.pathname, data, function(data){
         
+
+                            $('#status-updates-text').text('[Local] Creating shareable link...').show();
         
                             $('#saved-link').html('');
                             $('#saved-note-tips').html();
@@ -351,6 +372,8 @@ $(function() {
                             a.appendTo($('#saved-link'));
 
                             $('#saved-link-to-copy').val(data.link + '#' + key);
+                            $('#saved-link-to-copy').attr('value', data.link + '#' + key);
+
 
                             var toolTipElement = $('<span />');
                             $('<div />').text('Copied Link!').appendTo(toolTipElement);
@@ -369,16 +392,23 @@ $(function() {
 
 
                             //other tips
+                            $('#saved-note-tips').find('span').remove();
                             $('<span class="mb-md-1" />').html('<strong>Max TTL:</strong> ' + $form.find('select[name="ttl"] option:selected').text()).appendTo($('#saved-note-tips'));
                             $('<span class="mb-md-1" />').html('<strong>Self Destructs when Read:</strong> ' + ($form.find('input[name="destroy-on-read"]').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
                             $('<span class="mb-md-1" />').html('<strong>Manually Deletable:</strong> ' + ($form.find('input[name="allow-delete"]').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
 
 
+                            savedNoteModal.show();
 
-                            $('.status-updates').hide();
-                            $('.saved-link-display').show();
-                            $('#create-form-controls').hide();
-                            $('#create-a-new-note').hide();
+                            $form[0].reset();
+                            submitButton.attr('disabled', false);
+
+
+                            $('.status-updates').addClass('hidden');
+                            $('#status-updates-text').text('');
+                            //$('.saved-link-display').show();
+                            //$('#create-form-controls').hide();
+                            //$('#create-a-new-note').show();
 
                 
                         }, "json")
@@ -386,12 +416,12 @@ $(function() {
                 
                             try {
                                 var response = JSON.parse(xhr.responseText);
-                                $('.status-updates').text(response.status).show();
+                                $('#status-updates-text').text(response.status).show();
                             } catch(e) {
-                                $('.status-updates').text('Unexpected response from server').show();
+                                $('#status-updates-text').text('Unexpected response from server').show();
                             }
 
-                           
+                            submitButton.attr('disabled', false);
                                 
                         });
         

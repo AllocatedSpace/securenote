@@ -108,16 +108,29 @@
     }
 }
 
+#saved-link {
+    overflow: auto;
+
+    @media (min-width: 992px) {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    
+}
+
+button.cpy-from {
+    white-space: nowrap;
+}
 
 .saved-link-display a {
     word-wrap: break-word;
 }
 
 #saved-note-tips {
-    background: #efe3ba;
+    background: #f6f6f6;
     padding: 0.3em 1em;
-    border: 1px solid #dccfa2;
-    color: #7d6d38;
+    /* border: 1px solid #dccfa2; */
+    color: #565656;
 
     span {
         display: block;

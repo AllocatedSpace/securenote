@@ -14,33 +14,44 @@
             <form id="form-note-create">
 
 
-            <div class="alert alert-warning saved-link-display" role="alert" style="display:none">
-                
-                <div class="d-lg-flex flex-column flex-md-row justify-content-between">
-                    <span class="align-self-center"><strong>Link: </strong></span>
 
-                    <span class="align-self-center" id="saved-link"></span>
 
-                    <div class="copy-saved-link-container">
-                        <input type="text" value="..." id="saved-link-to-copy" class="visually-hidden">
-                        <div class="nbtooltip mt-2 mt-md-0">
-                            <button class="cpy-from btn btn-primary" data-inputpath="#saved-link-to-copy" >
-                                <span class="tooltiptext">Copy Link to clipboard</span>
-                                <span class="tooltiptext-upon-copy" style="display:none">Copied!</span>
-                                Copy Link
-                            </button>
+                <input type="text" value="..." id="saved-link-to-copy" class="visually-hidden">
+            <div class="modal fade" id="createdNoteMdlDlg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Shareable Secured Note</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="aalert aalert-warning saved-link-display" role="alert" astyle="display:none">
+                        <div class="d-lg-flex flex-column flex-md-row justify-content-between">
+                            <span class="align-self-center"><strong>Link: </strong></span>
+                            <span class="align-self-center" id="saved-link"></span>
+                            <div class="copy-saved-link-container">
+                                
+                                <div class="nbtooltip mt-2 mt-md-0">
+                                    <button class="cpy-from btn btn-secondary" data-inputpath="#saved-link-to-copy" >
+                                        <span class="tooltiptext">Copy Link to clipboard</span>
+                                        <span class="tooltiptext-upon-copy" style="display:none">Copied!</span>
+                                        Copy Link
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                        <div id="saved-note-tips" class="mt-3 d-md-flex flex-column flex-md-row justify-content-center"></div>
                     </div>
 
                 </div>
-
-                <div id="saved-note-tips" class="mt-3 d-md-flex flex-column flex-md-row justify-content-center"></div>
-
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Start Over</button>
+                    <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                </div>
+                </div>
             </div>
-
-
-            <div class="alert alert-warning status-updates" role="alert" style="display:none"></div>
-
+            </div>
 
 
 
@@ -93,11 +104,19 @@
                 </div>
 
 
-                <button type="submit" class="btn btn-primary">Create</button>
+                <div class="form-row d-flex flex-wrap justify-content-start align-items-center">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <div class="alert beside-button alert-primary status-updates animated1 hidden" role="alert">
+                        <span id="status-updates-text"></span>
+                        <div class="snprogress-bar">
+                            <div class="snprogress-bar-value"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
-            <!-- <button type="button" class="btn btn-primary mt-4" id="create-a-new-note" style="display:none">Create A New Secret Note</button> -->
+            <button type="button" class="btn btn-warning mt-4" id="create-a-new-note" style="display:none">Create A New Note <br /><small>(Copy your link first)</small></button>
 
             </form>
 

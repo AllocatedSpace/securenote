@@ -81,3 +81,66 @@ a {
   visibility: visible;
   opacity: 1;
 }
+
+
+.alert.beside-button {
+  margin-bottom: 0;
+  margin-left: 1em;
+  padding: 6px 12px;
+  flex-grow: 1 !important;
+}
+
+.animated1 {
+  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  
+}
+
+.animated1.hidden {
+  transform: translateX(40px);
+}
+
+.hidden {
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+  -moz-opacity: 0.0;         /* Mozilla extension */
+  -khtml-opacity:0.0;        /* Konqueror extension (Safari 1.1)*/
+  opacity: 0.0;      
+}
+
+.nopb .snprogress-container {
+  visibility: hidden;
+}
+
+.snprogress-container {
+  width: 300px;
+  margin: auto;
+}
+
+.snprogress-bar {
+  height: 4px;
+  background-color: rgb(185 211 250); /*rgba(5, 114, 206, 0.2);*/
+  width: 100%;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.snprogress-bar-value {
+  
+  width: 100%;
+  height: 100%;
+  background-color: rgb(227 238 255); /*rgb(5, 114, 206);*/
+  animation: indeterminateAnimation 1s infinite linear;
+  transform-origin: 0% 50%;
+}
+
+@keyframes indeterminateAnimation {
+  0% {
+      transform:  translateX(0) scaleX(0);
+  }
+  40% {
+      transform:  translateX(0) scaleX(0.4);
+  }
+  100% {
+      transform:  translateX(100%) scaleX(0.5);
+  }
+}

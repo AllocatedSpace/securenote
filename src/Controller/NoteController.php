@@ -11,6 +11,7 @@ use App\Entity\Note;
 use App\Service\SaferCrypto;
 use App\Service\NoteGUID;
 use App\Service\Cron;
+use App\Service\RecaptchaV3Helper;
 // ...
 
 class NoteController extends AbstractController
@@ -88,7 +89,7 @@ class NoteController extends AbstractController
         } else {
             $errors = $resp->getErrorCodes();
             return new JsonResponse([
-                'status' => json_encode($errors)
+                'status' => implode('; ', RecaptchaV3Helper::getErrorDescriptions($errors))
             ], $status = 403);
         }
         // recaptcha
@@ -185,7 +186,7 @@ class NoteController extends AbstractController
         } else {
             $errors = $resp->getErrorCodes();
             return new JsonResponse([
-                'status' => json_encode($errors)
+                'status' => implode('; ', RecaptchaV3Helper::getErrorDescriptions($errors))
             ], $status = 403);
         }
         // recaptcha
@@ -296,7 +297,7 @@ class NoteController extends AbstractController
         } else {
             $errors = $resp->getErrorCodes();
             return new JsonResponse([
-                'status' => json_encode($errors)
+                'status' => implode('; ', RecaptchaV3Helper::getErrorDescriptions($errors))
             ], $status = 403);
         }
         // recaptcha

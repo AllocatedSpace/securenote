@@ -5,6 +5,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Cron
 {
+
+    //CRON: */15 * * * * curl https://securenote.ca/cron/<CRONKEY> >/dev/null 2>&1
+
     public static function startCron($cronKey, Request $request) 
     {
         $httpHost = $request->server->get('HTTP_HOST');
