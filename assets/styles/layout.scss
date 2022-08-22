@@ -92,9 +92,7 @@
     padding: 1.5em;
     border-radius: 6px;
     box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
-
 }
-
 
 .content-block {
     @extend .shadowed;
@@ -113,8 +111,8 @@
 
     @media (min-width: 992px) {
         padding-left: 1em;
-        padding-right: 1em;
     }
+    
     
 }
 
