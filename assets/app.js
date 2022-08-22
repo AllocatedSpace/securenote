@@ -192,6 +192,8 @@ $(function() {
                 $('.alert-warning.confirmation-required').hide();
                 $('.loading-temporary').show();
 
+                $('textarea#secretnote').text('').autogrow();
+
 
                 var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
 
