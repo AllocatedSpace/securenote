@@ -56,6 +56,8 @@ $(function() {
 
             $('#confirm-destroy').on('click', function(){
 
+                $('.loading-temporary').show();
+
                 var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
 
                 grecaptcha.ready(function() {
@@ -128,9 +130,10 @@ $(function() {
             });
 
             $('#delete-note').on('click', function(){
+                
+                $('.loading-temporary').show();
 
                 var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
-                $('.loading-temporary').hide();
                 grecaptcha.ready(function() {
                     $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
                     grecaptcha.execute(reCaptchaSiteKey, {action: 'deleteNote'}).then(function(recaptchaToken) { 
