@@ -33,12 +33,17 @@ $(function() {
 
             var urlHash = (window.location.hash).replace('#', '');
             var decryptingNoteApp = new SecureNote(urlHash); //pass the key
+
+            $('#status-updates-text').text('[Local] Creating key and calculating hash...').show();
+
             var keyHash = await decryptingNoteApp.getKeyHash();
 
             $(window).on('hashchange', function() {
                 (async () => {
                     urlHash = (window.location.hash).replace('#', '');
                     decryptingNoteApp.setKey(urlHash); //pass the key
+                    $('.loading-temporary').show();
+                    $('#status-updates-text').text('[Local] Creating key and calculating hash...').show();
                     keyHash = await decryptingNoteApp.getKeyHash();
 
                     loadData();
@@ -54,12 +59,14 @@ $(function() {
                 var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
 
                 grecaptcha.ready(function() {
+                    $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
                     grecaptcha.execute(reCaptchaSiteKey, {action: 'readNote'}).then(function(recaptchaToken) { 
-
+                        $('#status-updates-text').text('Asking server for encrypted note...').show();
                         $.post(window.location.origin + window.location.pathname, {keyHash: keyHash, confirmDestroy: '1', recaptchaToken: recaptchaToken}, function(data){
                             //decrypt and show
                             (async () => {
                                 try {
+                                    $('#status-updates-text').text('[Local] Decrypting note...').show();
                                     var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
                                     
                                     $('.secretnote-group').show();
@@ -123,10 +130,11 @@ $(function() {
             $('#delete-note').on('click', function(){
 
                 var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
-
+                $('.loading-temporary').hide();
                 grecaptcha.ready(function() {
+                    $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
                     grecaptcha.execute(reCaptchaSiteKey, {action: 'deleteNote'}).then(function(recaptchaToken) { 
-
+                        $('#status-updates-text').text('Deleting Note from Server').show();
                         $.post(window.location.origin + '/delete' + window.location.pathname, {keyHash: keyHash, confirmDestroy: '1', recaptchaToken: recaptchaToken}, function(data){
                             //manually delete
 
@@ -182,13 +190,15 @@ $(function() {
 
                 $('.loading-error').hide();
                 $('.alert-warning.confirmation-required').hide();
+                $('.loading-temporary').show();
 
 
                 var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
 
                 grecaptcha.ready(function() {
+                    $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
                     grecaptcha.execute(reCaptchaSiteKey, {action: 'readNote'}).then(function(recaptchaToken) { 
-
+                        $('#status-updates-text').text('Asking server for encrypted note...').show();
                         $.post(window.location.origin + window.location.pathname, {keyHash: keyHash, recaptchaToken: recaptchaToken}, function(data){
 
 
@@ -215,6 +225,7 @@ $(function() {
                                 (async () => {
                                     //decrypt and show
                                     try {
+                                        $('#status-updates-text').text('[Local] Decrypting note...').show();
                                         var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
                                         $('.secretnote-group').show();
                                         $('textarea#secretnote').text(decryptedText).autogrow(); //.triggerHandler('change');
