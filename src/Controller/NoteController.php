@@ -260,7 +260,7 @@ class NoteController extends AbstractController
 
     public function tryCron(ManagerRegistry $doctrine, Request $request)
     {
-        if(mt_rand(1, 100) < 10)
+        if(false && mt_rand(1, 100) < 10) //disabled for now.
         {
             $REAL_CRON_KEY = $this->getParameter('app.CRON_KEY');
             
