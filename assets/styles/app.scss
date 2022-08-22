@@ -96,6 +96,10 @@ a {
   
 }
 
+a {
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)
+}
+
 .animated1.hidden {
   transform: translateX(40px);
 }

@@ -65,8 +65,8 @@ $(function() {
                                     $('.secretnote-group').show();
                                     $('textarea#secretnote').show().text(decryptedText).autogrow(); //triggerHandler('change');
 
-                                    $('.loading-error').text("The note is now destroyed. Make sure to copy it before you leave this page, it's gone forever.").fadeIn('fast');
-                                    $('.alert-warning.confirmation-required').fadeOut('fast');
+                                    $('.loading-error').text("The note is now destroyed. Make sure to copy it before you leave this page, it's gone forever.").show();
+                                    $('.alert-warning.confirmation-required').hide();
 
                                     if(data.offer_delete) {
                                         $('#delete-note').fadeIn('fast');
@@ -87,21 +87,21 @@ $(function() {
             
                             try {
                                 var response = JSON.parse(xhr.responseText);
-                                $('.loading-error').text(response.status).fadeIn('fast');
+                                $('.loading-error').text(response.status).show();
             
                                 if(response.detail) {
                                     //probably an actual server error (symfony error in json?)
-                                    $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).fadeIn('fast');
+                                    $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).show();
                                 }
             
                                 if(response.destroyedOn) {
-                                    $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').fadeIn('fast');
+                                    $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').show();
                                 }
             
                             } catch(e) {
                                 alert( error + ' : ' + xhr.responseText );
             
-                                $('.loading-error').text('Unexpected response').fadeIn('fast');
+                                $('.loading-error').text('Unexpected response').show();
                             }
             
                             $('.loading-error').show();
@@ -131,9 +131,9 @@ $(function() {
                             //manually delete
 
                             if(data.destroyed) {
-                                $('.loading-error').text("The note was deleted. Make sure to copy it before you leave this page, it's gone forever.").fadeIn('fast');
+                                $('.loading-error').text("The note was deleted. Make sure to copy it before you leave this page, it's gone forever.").show();
                             } else {
-                                $('.loading-error').text("The note was probably deleted; there may have been an error. There was an unexpected response from the server, but no error info.").fadeIn('fast');
+                                $('.loading-error').text("The note was probably deleted; there may have been an error. There was an unexpected response from the server, but no error info.").show();
                             }
 
                             $('#delete-note').fadeOut();
@@ -148,21 +148,21 @@ $(function() {
             
                             try {
                                 var response = JSON.parse(xhr.responseText);
-                                $('.loading-error').text(response.status).fadeIn('fast');
+                                $('.loading-error').text(response.status).show();
             
                                 if(response.detail) {
                                     //probably an actual server error (symfony error in json?)
-                                    $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).fadeIn('fast');
+                                    $('.loading-error').text($('.loading-error').text() + ' - ' + response.detail).show();
                                 }
             
                                 if(response.destroyedOn) {
-                                    $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').fadeIn('fast');
+                                    $('.loading-error').text('The note was destroyed ' + moment(response.destroyedOn).from() + '.').show();
                                 }
             
                             } catch(e) {
                                 alert( error + ' : ' + xhr.responseText );
             
-                                $('.loading-error').text('Unexpected response').fadeIn('fast');
+                                $('.loading-error').text('Unexpected response').show();
                             }
             
                             $('.loading-error').show();
@@ -193,9 +193,9 @@ $(function() {
 
 
                             if(data.was_deleted) {
-                                $('.loading-error').text('This note has just self destructed... To die, to sleep, No more...').fadeIn();
+                                $('.loading-error').text('This note has just self destructed... To die, to sleep, No more...').show();
                             } else if(data.expires) {
-                                $('.loading-error').text('This note will expire ' + moment(data.expires).from() + '.').fadeIn();
+                                $('.loading-error').text('This note will expire ' + moment(data.expires).from() + '.').show();
                             }
             
                             //if the note will self-destruct, we have to ask for confirmation first
