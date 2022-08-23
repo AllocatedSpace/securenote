@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}securenote.ca!{% endblock %}</title>
+        <title>{% block title %}{% endblock %} - securenote.ca</title>
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
@@ -19,11 +19,13 @@
         <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
         <link rel="manifest" href="/images/site.webmanifest">
         <script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "Secure Note", "url": "https://securenote.ca/" }</script>
-        <meta name="description" content="Securely share a self-destructing encrypted note with anyone." />
-        <meta property="og:url" content="https://securenote.ca/" />
+        <meta name="description" content="{% block metadescription %}Securely share a self-destructing encrypted note with anyone.{% endblock %}" />
+        <meta property="og:url" content="https://securenote.ca{{ app.request.requesturi }}" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Secure Note" />
-        <meta property="og:description" content="Securely share a self-destructing encrypted note with anyone." />
+        <meta property="og:title" content="{{ block('title') }}" />
+        <meta property="og:description" content="{{ block('metadescription') }}" />
+        <meta property="og:image" content="http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg" />
+        <link rel="canonical" href="https://securenote.ca{{ app.request.requesturi }}" />
     </head>
     <body>
         <div id="main-container" class="d-flex flex-column justify-content-start">

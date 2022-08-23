@@ -139,3 +139,17 @@ button.cpy-from {
 textarea#secretnote {
     overflow: auto !important;
 }
+
+.ttl-container {
+    @media(max-width: 991px) {
+        width: 100%;
+    }
+}
+
+.beside-button.status-updates,
+#form-note-create button[type="submit"] {
+    @media(max-width: 991px) {
+        // width: 100%;
+
+    }
+}

@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
-{% block title %}How notes are encrypted and what data is stored where  - securenote.ca{% endblock %}
+{% block title %}How notes are encrypted and what data is stored where{% endblock %}
+{% block metadescription %}Secure Notes are encrypted and decrypted directly in the browser. The key is not shared with the server, where it is stored.{% endblock %}
 
 {% block body %}
 <div class="container" id="container-howitworks">
@@ -8,99 +9,102 @@
             
             <h1>How it Works</h1>
 
-            <h2 class="mt-3">Summary</h2>
-            <p>Encryption and Decryption happens directly in your browser. To store the note, your browser sends the encrypted data and a 
-                <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">one-way SHA-256 hash</a> of the key.</p>
+            <div class="mt-4 content-block">
+                <h2 class="mb-3">Summary</h2>
+                <p>AES 128-bit encryption and decryption happens directly in your browser. To store the secure note, your browser sends the already encrypted data and a 
+                    <a target="_blank" rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">one-way SHA-256 hash</a> of the random key.</p>
+                
+                <p>Since the key is never sent to the server, it's not possible for the server to decrypt the note. 
+                    The key is stored in the shareable link as the <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"><code>location.hash</code></a>
+                    (the part after the "#" in the address bar). Browsers don't send the location hash in their request to the server, so the server still doesn't get a copy of your key 
+                    even when you follow the shared secure-note link.</p>
+
+                <p>A <a target="_blank" rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">SHA-256 hash</a> of the key is also sent to the server. 
+                    This is done to prevent bots from scraping ecrypted blobs by guessing only part of the URI for (the GUID) and also
+                to ensure the "self-destruct" option is respected. The browser can't retrieve the encrypted data for a note unless it both knows the note's GUID and can prove
+                to the server it has the key to decrypt it (by providing the SHA-256 hash) with out actually sharing the key with the server.</p>
+
+                <p>In other words, the server is just a remote storage for the encrypted data <code>blob</code>. The server doesn't have the key to decrypt it, so even if it was data-dumped, the encrypted data is useless.
+                    To decrypt a note, you must have the original link for it.
+                </p>
+            </div>
             
-            <p>Since the key is never sent to the server, it's not possible for the server to decrypt the note. 
-                The key is stored in the shared-link as the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"><code>Window Location Hash</code></a>
-                 (the part after the "#" in the address bar). Browsers don't send the location hash in their request to the server, so the server still doesn't get a copy of your key 
-                 even when you follow the shared secure-note link.</p>
-
-            <p>A <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">one-way SHA-256 hash</a> of the key is also sent to the server. 
-                This is done to prevent bots from automatically scraping ecrypted data from notes it guessed part of the URI for (to bruteforce decrypt later) and also
-            to ensure the "self-destruct" option is respected. The browser can't retrieve the encrypted data for a note unless it both knows the note's GUID and can prove
-            to the server it has the key to decrypt it (by providing the SHA-256 hash) with out actually sharing the key with the server.</p>
-
-            <p>In other words, the server is just a remote storage for the encrypted data <code>blob</code>. The server doesn't have the key to decrypt it, so even if it was data-dumped, the encrypted data is useless.
-                To decrypt a note, you must have the original link for it.
-            </p>
             
             <h2 class="mt-5 mb-5">Detailed Process</h2>
 
-            <h3 class="mt-3 mb-3">Note Creation</h3>
-            <ul>
-                <h4>Browser</h4>
-                <ol class="mb-3">
-                    <li>Generates a random key-string using <code><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues">window.crypto.getRandomValues()</a></code> - length: 32 bytes</li>
-                    <li>Algorithm: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> 
-                        - Using the random key-string, your browser generates a AES-CBC key using <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey" target="_blank"><code>crypto.subtle.importKey()</code></a> </li>
-                    <li>Algorithm: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> 
-                        - Encrypts the note text using <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt"><code>crypto.subtle.encrypt()</code></a></li>
-                    <li>Generates a SHA-256 hash with <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest"><code>crypto.subtle.digest()</code></a> on the key-string</li>
-                    <li>Browser sends the encrypted-data and the SHA-256 key-hash to the server via an 
-                        <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send#example_post" target="_blank">XHR POST</a> with a the following payload <code>{encryptedData, keyHash, ExpireData, SelfDestructable, Deletable, ...}</code></li>
-                </ol>
+            <div class="mt-2 content-block">
+                <h3 class="mb-3">Encryption (Note creation, and storing)</h3>
+                <ul>
+                    <h4>Browser</h4>
+                    <ol class="mb-3">
+                        <li>Generates a random key-string using <code><a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues">window.crypto.getRandomValues()</a></code></li>
+                        <li>Using the random key-string, your browser generates a <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> key using <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey" target="_blank"><code>crypto.subtle.importKey()</code></a> </li>
+                        <li>Encrypts the note with AES 128-bit encryption using <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt"><code>crypto.subtle.encrypt()</code></a></li>
+                        <li>Generates a SHA-256 hash with <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest"><code>crypto.subtle.digest()</code></a> on the key-string</li>
+                        <li>Uploads the AES 128-bit encrypted data and the SHA-256 key-hash to the server via an 
+                            <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send#example_post" target="_blank">XHR POST</a> with a the following payload <code>{encryptedData, keyHash, ExpireData, SelfDestructable, Deletable, ...}</code></li>
+                    </ol>
 
-                <h4>Server</h4>
-                <ol class="mb-3">
-                    <li>Server generates a random 26-byte alphanumeric GUID (unrelated to the secure-note data) using 
-                        <a target="_blank" href="https://www.php.net/manual/en/function.openssl-random-pseudo-bytes.php"><code>openssl_random_pseudo_bytes()</code></a>
-                        /<a target="_blank" href="https://www.php.net/manual/en/function.random-bytes.php"><code>random_bytes()</code></a></li>
-                    <li>Server stores a note record, which has the following fields: <code>{guid, encryptedData, destroyOnRead, expire, destroyed, keyhash, allowDelete}</code></li>
-                    <li>Server returns the 26-byte alphanumeric GUID <code>{link: '/n/GUID'}</code></li>
-                </ol>
+                    <h4>Server</h4>
+                    <ol class="mb-3">
+                        <li>Server generates a random 26-byte alphanumeric GUID (unrelated to the secure-note data) using 
+                            <a rel="external nofollow noopener" target="_blank" href="https://www.php.net/manual/en/function.openssl-random-pseudo-bytes.php"><code>openssl_random_pseudo_bytes()</code></a>
+                            /<a rel="external nofollow noopener" target="_blank" href="https://www.php.net/manual/en/function.random-bytes.php"><code>random_bytes()</code></a></li>
+                        <li>Server stores a note record, which has the following fields: <code>{guid, encryptedData, destroyOnRead, expire, destroyed, keyhash, allowDelete}</code></li>
+                        <li>Server returns the 26-byte alphanumeric GUID <code>{link: '/n/GUID'}</code></li>
+                    </ol>
 
-                <h4>Browser - generates and shows a shareable link</h4>
-                <ol class="mb-3">
-                    <li>The 26-byte alphanumeric GUID is parsed from the returned data</li>
-                    <li>The browser generates a shareable link to display on the screen by concatenating the GUID from the server, and a '#', and the keyString: <code>/n/guid#keystring</code></li>
-                </ol>
-            </ul>
+                    <h4>Browser - generates and shows a shareable link</h4>
+                    <ol class="mb-3">
+                        <li>The 26-byte alphanumeric GUID is parsed from the returned data</li>
+                        <li>The browser generates a shareable link to display on the screen by concatenating the GUID from the server, and a '#', and the keyString: <code>/n/guid#keystring</code></li>
+                    </ol>
+                </ul>
+            </div>
 
-            <h3 class="mt-5 mb-3">Note Reading</h3>
-            <ul>
+            <div class="mt-4 content-block">
+                <h3 class="mb-3">Decryption (Note download, and reading)</h3>
+                <ul>
 
-                <h4>Browser - when GUID is found, and key-hash is correct</h4>
-                <ol class="mb-3">
-                    <li>Browser loads a URI like <code>/n/GUID</code></li>
-                    <li>After the window <code>load</code> event, the browser extracts the key-string from the current <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"></a><code>window.location.hash</code></li>
-                    <li>Generates a <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">SHA-256 hash</a> of the key-string</li>
-                    <li>Browser makes an <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send#example_post" target="_blank">XHR POST</a>
-                         request to the same parent request URI (<code>/n/GUID</code>) with a <code>body</code> payload of: <code>{keyHash}</code></li>
-                </ol>
+                    <h4>Browser - when GUID is found, and key-hash is correct</h4>
+                    <ol class="mb-3">
+                        <li>Browser loads a URI like <code>/n/GUID</code></li>
+                        <li>After the window <code>load</code> event, the browser extracts the key-string from the current <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"></a><code>window.location.hash</code></li>
+                        <li>Generates a <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">SHA-256 hash</a> of the key-string</li>
+                        <li>Browser makes an <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send#example_post" target="_blank">XHR POST</a>
+                            request to the same parent request URI (<code>/n/GUID</code>) with a <code>body</code> payload of: <code>{keyHash}</code></li>
+                    </ol>
 
-                <h4>Server - responding to the <code>XmlHttpRequest</code> with the <code>{keyHash}</code> POST payload</h4>
-                <ol class="mb-3">
-                    <li>Server retrieves a secure-note that has both the GUID (parsed from the URI) and keyHash (parsed from POST data), if any.</li>
-                    <li>If found, and is self-destructing:</li>
-                        <ol>
-                        <li>Server returns <code>{confirmReadAndDestroy}</code></li>
-                        <li>Browser presents a <code>[Read and Destroy It]</code> (confirmation) button, that if clicked, repeats this step but with an extra 
-                            element in the payload: <code>{..., confirmDestroy: true}</code></li>
-                        </ol>
-                    <li>If found, and is self-destructing, and <code>{..., confirmDestroy: true}</code> is in the payload:</li>
-                        <ol>
-                        <li>Server purges the encrypted-data from the record, and stores the date of destruction</li>
-                        <li>Server returns <code>{encryptedData, expireDate, ...)}</code></li>
-                        </ol>
-                    <li>If found, but destroyed (no encrypted data):</li>
-                        <ol>
-                        <li>Returns a 404 and a date of destruction </li>
-                        </ol>
+                    <h4>Server - responding to the <code>XmlHttpRequest</code> with the <code>{keyHash}</code> POST payload</h4>
+                    <ol class="mb-3">
+                        <li>Server retrieves a secure-note that has both the GUID (parsed from the URI) and keyHash (parsed from POST data), if any.</li>
+                        <li>If found, and is self-destructing:</li>
+                            <ol>
+                            <li>Server returns <code>{confirmReadAndDestroy}</code></li>
+                            <li>Browser presents a <code>[Read and Destroy It]</code> (confirmation) button, that if clicked, repeats this step but with an extra 
+                                element in the payload: <code>{..., confirmDestroy: true}</code></li>
+                            </ol>
+                        <li>If found, and is self-destructing, and <code>{..., confirmDestroy: true}</code> is in the payload:</li>
+                            <ol>
+                            <li>Server purges the encrypted-data from the record, and stores the date of destruction</li>
+                            <li>Server returns <code>{encryptedData, expireDate, ...)}</code></li>
+                            </ol>
+                        <li>If found, but destroyed (no encrypted data):</li>
+                            <ol>
+                            <li>Returns a 404 and a date of destruction </li>
+                            </ol>
 
-                </ol>
+                    </ol>
 
-                <h4>Browser - if the server returned encryptedData</h4>
-                <ol class="mb-3">
-                    <li>Algorithm: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> 
-                        - Using the key-string that is parsed from the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"></a><code>window.location.hash</code>
-                        , the browser generates a AES-CBC key using <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey" target="_blank"><code>crypto.subtle.importKey()</code></a> </li>
-                    <li>Algorithm: <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> 
-                        - Decrypts the encryptedData (received from the server) using <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt"><code>crypto.subtle.decrypt()</code></a></li>
-                    <li>Browser shows the decrypted data in a readonly textarea</li>
-                </ol>
-            </ul>
+                    <h4>Browser - if the server returned encryptedData</h4>
+                    <ol class="mb-3">
+                        <li>Using the key-string that is parsed from the <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"></a><code>window.location.hash</code>
+                            , the browser generates a <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> key using <a rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey" target="_blank"><code>crypto.subtle.importKey()</code></a> </li>
+                        <li>Decrypts the encryptedData (received from the server) using <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt"><code>crypto.subtle.decrypt()</code></a></li>
+                        <li>Browser shows the decrypted data in a readonly textarea</li>
+                    </ol>
+                </ul>
+            </div>
             
     
         </div>

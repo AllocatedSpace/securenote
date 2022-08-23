@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
-{% block title %}Create a Secure Note to share with anyone - securenote.ca{% endblock %}
+{% block title %}Create a Secure Note{% endblock %}
+{% block metadescription %}Share a secure note that is encrypted using AES 128-bit encryption. The key is not shared with the server, only those who you share your link with.{% endblock %}
 
 
 {% block recaptchascript %}<script src="https://www.google.com/recaptcha/api.js?render={{ GOOGLE_RECAPTCHA_SITE_KEY }}"></script>{% endblock %}
@@ -30,7 +31,7 @@
                         <div class="d-lg-flex flex-column flex-md-row justify-content-between align-items-center">
                             <!-- <span class="align-self-center"><strong>Link: </strong></span> -->
                             <div class="copy-saved-link-container">
-                                <div class="nbtooltip mt-2 mt-md-0">
+                                <div class="nbtooltip mt-2 mt-md-0 mb-3 mb-0-md">
                                     <button class="cpy-from btn btn-secondary" data-inputpath="#saved-link-to-copy" >
                                         <span class="tooltiptext">Copy Link to clipboard</span>
                                         <span class="tooltiptext-upon-copy" style="display:none">Copied!</span>
@@ -57,7 +58,7 @@
             <div id="create-form-controls"  class="content-block">
                 <h1>New Note</h1>
                 <div class="form-row d-flex align-items-center mb-3">
-                    <div class="form-group ">
+                    <div class="form-group ttl-container">
                         <label for="ttl">Maximum Time-to-Live (if not deleted sooner)</label>
                         <!--<input type="number" class="form-control" name="ttl" id="ttl" min="1" max="30" width="4em" value="30" placeholder="1 to 30 days" required>--->
                         <select class="form-select" aria-label="Maximum time for the note to live" name="ttl" id="ttl">
@@ -76,7 +77,7 @@
                             <option value="31D">31 Days</option>
                         </select>
                     </div>
-                    <div class="fform-group ps-5 pt-3 d-flex align-items-center">
+                    <div class="fform-group ps-lg-5 pt-3 d-flex align-items-center">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="destroy-on-read" id="destroy-on-read" checked>
                             <label class="form-check-label" for="destroy-on-read">
@@ -85,7 +86,7 @@
                         </div>
                     </div>
 
-                    <div class="fform-group ps-5 pt-3 mr-auto d-flex align-items-center">
+                    <div class="fform-group ps-md-5 pt-3 mr-auto d-flex align-items-center">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="allow-delete" id="allow-delete" disabled>
                             <label class="form-check-label" for="allow-delete">
@@ -103,9 +104,9 @@
                 </div>
 
 
-                <div class="form-row d-flex flex-wrap justify-content-start align-items-center">
-                    <button type="submit" class="btn btn-primary">Create</button>
-                    <div class="alert beside-button alert-primary status-updates animated1 hidden" role="alert">
+                <div class="form-row d-flex flex-column flex-md-row flex-wrap justify-content-start align-items-stretch align-items-md-center ">
+                    <button type="submit" class="btn btn-primary ">Create</button>
+                    <div class="alert beside-button alert-primary status-updates animated1 hidden mt-2 mt-md-0 ms-0 ms-md-3" role="alert">
                         <span id="status-updates-text"></span>
                         <div class="snprogress-bar">
                             <div class="snprogress-bar-value"></div>
@@ -118,6 +119,14 @@
             <button type="button" class="btn btn-warning mt-4" id="create-a-new-note" style="display:none">Create A New Note <br /><small>(Copy your link first)</small></button>
 
             </form>
+
+
+            <div class="mt-4 content-block">
+                <h1>Share an Encrypted Note</h1>
+                <p>Your note is kept secure with <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt" target="_blank" rel="external nofollow noopener"></a>AES 128-bit encryption
+                     that's performed directly in your browser, not the server! The server only stores your encrypted data, and a 256-SHA hash of your random key. <strong>Your key is not shared with the server.</strong> The key exists only the <code>location.hash</code> of your link. </p>
+                <p><a href="/how-it-works">Learn more</a></p>
+            </div>
 
 
 
