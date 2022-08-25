@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}Read a Secure Note{% endblock %}
 {% block metadescription %}Decrypt a client-side encrypted Secure Note{% endblock %}
-
+{% block ogimage %}/images/large-screen-read.png{% endblock %}
 {% block recaptchascript %}<script src="https://www.google.com/recaptcha/api.js?render={{ GOOGLE_RECAPTCHA_SITE_KEY }}"></script>{% endblock %}
 {% block envvariables %}<meta name="GOOGLE_RECAPTCHA_SITE_KEY" value="{{ GOOGLE_RECAPTCHA_SITE_KEY }}">{% endblock %}
 

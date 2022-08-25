@@ -5,16 +5,15 @@
 
 #header {
 
-    background-color: #5a5a5a;
+    background-color: #3e3e3e;
     color: #dadada;
-
     font-size: 140%;
 
     .header-aside a {
         text-decoration: none;
-        color: #e1e1e1;
+        color: #ffffff;
         &:hover, &:active, &:focus {
-            color: #ffffff;
+            color: #e0e0e0;
         }
     }
 
@@ -22,12 +21,48 @@
         color: #ffffff;
         text-decoration: none;
     }
+
+   
+
+    svg.svg-l {
+        width: 260px;
+        height: 52.34px;
+
+        margin-left: -18px;
+   
+
+        @media(max-width: 490px) {
+            width: 160px;
+            height: 32.2px;
+        }
+
+        @media(max-width: 767px) {
+            width: 200px;
+            height: auto;
+            margin-left: 0;
+        }
+
+
+
+        .keyhole{fill:#ffc418}
+        .cls-1{font-size:72px;}
+        .cls-1,.cls-4{fill:#d5d5d5;font-family:HelveticaNeue, Helvetica Neue;}
+        .cls-2{letter-spacing:-0.02em;}
+        .cls-3{letter-spacing:-0.01em;}
+        .cls-4{font-size:18px;}
+    }
+    
+
+    
+
+
 }
 
 
 #footer {
-    background-color: #5a5a5a;
+    background-color: #3e3e3e;
     padding-bottom: 3em;
+    color: #9a9a9a;
 
     a {
         
@@ -38,20 +73,30 @@
         }
         
     }
+
+    svg {
+        width: 100px;
+    }
+
+    .cls-1{fill:#c0c0c0; display: none;}
+    .cls-2{fill:#898989;}
+    .cls-3{fill: #3e3e3e;stroke: #a9a9a9;stroke-miterlimit:10;}
 }
 
 #sub-header {
-    background: #8b8b8b;
-    color: #eaeaea;
+    background: #fbfbfb;
+    color: #454545;
     font-size: 13px;
+    //box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 2%), 0 0 0 1px rgb(10 10 10 / 2%);
 
     a {
         
-        text-decoration: underline;
-        color: #e1e1e1;
-        &:hover, &:active, &:focus {
-            color: #ffffff;
-        }
+        // text-decoration: underline;
+        // color: #e1e1e1;
+        // &:hover, &:active, &:focus {
+        //     color: #ffffff;
+        // }
     }
 
     @media (max-width: 768px) {
@@ -101,6 +146,11 @@
 
 
 .footer-nav {
+
+    a {
+        margin-bottom: 1.2em;
+    }
+
     @media(max-width: 768px) {
 
     }
