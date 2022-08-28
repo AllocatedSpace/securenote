@@ -58,7 +58,7 @@ $(function() {
 
                 $('.loading-temporary').show();
 
-                var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
+                var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content');
 
                 grecaptcha.ready(function() {
                     $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
@@ -133,7 +133,7 @@ $(function() {
                 
                 $('.loading-temporary').show();
 
-                var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
+                var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content');
                 grecaptcha.ready(function() {
                     $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
                     grecaptcha.execute(reCaptchaSiteKey, {action: 'deleteNote'}).then(function(recaptchaToken) { 
@@ -198,7 +198,7 @@ $(function() {
                 $('textarea#secretnote').text('').autogrow();
 
 
-                var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
+                var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content');
 
                 grecaptcha.ready(function() {
                     $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
@@ -322,7 +322,7 @@ $(function() {
             var $form = $(this);
             var submitButton = $form.find('button[type="submit"]');
 
-            var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('value');
+            var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content');
 
             
 

@@ -4,7 +4,7 @@
 
 
 {% block recaptchascript %}<script src="https://www.google.com/recaptcha/api.js?render={{ GOOGLE_RECAPTCHA_SITE_KEY }}"></script>{% endblock %}
-{% block envvariables %}<meta name="GOOGLE_RECAPTCHA_SITE_KEY" value="{{ GOOGLE_RECAPTCHA_SITE_KEY }}">{% endblock %}
+{% block envvariables %}<meta name="GOOGLE_RECAPTCHA_SITE_KEY" content="{{ GOOGLE_RECAPTCHA_SITE_KEY }}">{% endblock %}
 
 {% block body %}
 <div class="container" id="container-note-create">
@@ -27,9 +27,8 @@
                 </div>
                 <div class="modal-body">
 
-                    <div class="aalert aalert-warning saved-link-display" role="alert" astyle="display:none">
+                    <div class="aalert aalert-warning saved-link-display" role="alert">
                         <div class="d-lg-flex flex-column flex-md-row justify-content-between align-items-center">
-                            <!-- <span class="align-self-center"><strong>Link: </strong></span> -->
                             <div class="copy-saved-link-container">
                                 <div class="nbtooltip mt-2 mt-md-0 mb-3 mb-0-md">
                                     <button class="cpy-from btn btn-secondary" data-inputpath="#saved-link-to-copy" >
@@ -47,7 +46,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Start Over</button>
-                    <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+
                 </div>
                 </div>
             </div>
@@ -61,7 +60,6 @@
                 <div class="form-row d-flex flex-column flex-sm-row align-items-sm-center mb-3">
                     <div class="form-group ttl-container">
                         <label for="ttl">Maximum Time-to-Live (if not deleted sooner)</label>
-                        <!--<input type="number" class="form-control" name="ttl" id="ttl" min="1" max="30" width="4em" value="30" placeholder="1 to 30 days" required>--->
                         <select class="form-select" aria-label="Maximum time for the note to live" name="ttl" id="ttl">
                             <option value="15M">15 Minutes</option>
                             <option value="30M">30 Minutes</option>
