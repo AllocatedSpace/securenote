@@ -1,13 +1,19 @@
 #main-container {
     min-height: 100vh;
-    background: #f6f6f6;
+    //background: #f6f6f6;
+    background: #0f0f0f;
+    background: #0d1117;
 }
 
 #header {
 
-    background-color: #3e3e3e;
+    // background-color: #3e3e3e;
+    // color: #dadada;
+    // font-size: 140%;
+
+    background-color: #151515;
+    background-color: #161b22;
     color: #dadada;
-    font-size: 140%;
 
     .header-aside a {
         text-decoration: none;
@@ -25,9 +31,9 @@
    
 
     svg.svg-l {
-        width: 260px;
-        height: 52.34px;
-
+        // width: 260px;
+        // height: 52.34px;
+        height: 30.34px;
 
 
         @media(max-width: 490px) {
@@ -55,7 +61,7 @@
 
 
 #footer {
-    background-color: #3e3e3e;
+    //background-color: #3e3e3e;
     padding-bottom: 3em;
     color: #9a9a9a;
 
@@ -76,14 +82,20 @@
     .cls-1{fill:#c0c0c0; display: none;}
     .cls-2{fill:#898989;}
     .cls-3{fill: #3e3e3e;stroke: #a9a9a9;stroke-miterlimit:10;}
+
+    > .container {
+        border-top: 1px solid #2b2b2b;
+    }
 }
 
 #sub-header {
-    background: #fbfbfb;
-    color: #454545;
+    // background: #fbfbfb;
+    // color: #454545;
     font-size: 13px;
-    //box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
-    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 2%), 0 0 0 1px rgb(10 10 10 / 2%);
+    //box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 2%), 0 0 0 1px rgb(10 10 10 / 2%);
+
+    color: #999999;
+    font-size: 13px;
 
     a {
         
@@ -92,6 +104,11 @@
         // &:hover, &:active, &:focus {
         //     color: #ffffff;
         // }
+        color: #cecece;
+
+        &:hover {
+            color: #fff;
+        }
     }
 
     @media (max-width: 768px) {
@@ -135,8 +152,13 @@
 }
 
 .content-block {
-    @extend .shadowed;
-    background-color: white;
+    //@extend .shadowed;
+    //background-color: white;
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    color: #d5d5d5;
+    padding: 1.5em;
+    border-radius: 6px;
 }
 
 
@@ -170,10 +192,10 @@ button.cpy-from {
 }
 
 #saved-note-tips {
-    background: #f6f6f6;
+    background: #30363d;
     padding: 0.3em 1em;
     /* border: 1px solid #dccfa2; */
-    color: #565656;
+    color: #dadada;
 
     span {
         display: block;
@@ -183,6 +205,7 @@ button.cpy-from {
 
 textarea#secretnote {
     overflow: auto !important;
+    margin-top: 0.4em;
 }
 
 .ttl-container {
