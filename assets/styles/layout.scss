@@ -240,3 +240,13 @@ textarea#secretnote {
 
     }
 }
+
+
+.footer-version-info {
+    text-align: right;
+    /* border-top: 1px solid #2b2b2b; */
+    /* border-top: 1px solid var(--footer-border-top-color); */
+    margin-top: 2rem;
+    font-size: 76%;
+    padding-top: 1em;
+}
