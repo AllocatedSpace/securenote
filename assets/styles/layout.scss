@@ -1,8 +1,8 @@
 #main-container {
     min-height: 100vh;
     //background: #f6f6f6;
-    background: #0f0f0f;
     background: #0d1117;
+    background-color: var(--form-element-bg);
 }
 
 #header {
@@ -11,20 +11,24 @@
     // color: #dadada;
     // font-size: 140%;
 
-    background-color: #151515;
     background-color: #161b22;
+    background-color: var(--header-bg);
     color: #dadada;
+    color: var(--header-color);
 
     .header-aside a {
         text-decoration: none;
         color: #ffffff;
+        color: var(--header-aside-a);
         &:hover, &:active, &:focus {
             color: #e0e0e0;
+            color: var(--header-aside-a-hover);
         }
     }
 
     .col.header a {
         color: #ffffff;
+        color: var(--header-aside-a);
         text-decoration: none;
     }
 
@@ -47,9 +51,9 @@
             margin-left: 0;
         }
 
-        .cls-1{fill:#d5d5d5;}
-        .cls-2{fill:#aeadae;}
-        .cls-3{fill:#ffc51b;}
+        .cls-1{fill:#d5d5d5; fill: var(--header-cls-1-fill);}
+        .cls-2{fill:#aeadae; fill: var(--header-cls-2-fill);}
+        .cls-3{fill:#ffc51b; fill: var(--header-cls-3-fill);}
 
     }
     
@@ -64,13 +68,16 @@
     //background-color: #3e3e3e;
     padding-bottom: 3em;
     color: #9a9a9a;
+    color: var(--footer-color);
 
     a {
         
         text-decoration: none;
         color: #e1e1e1;
+        color: var(--footer-a);
         &:hover, &:active, &:focus {
             color: #ffffff;
+            color: var(--footer-a-hover);
         }
         
     }
@@ -85,6 +92,8 @@
 
     > .container {
         border-top: 1px solid #2b2b2b;
+        border-top: 1px solid var(--footer-border-top-color);
+        
     }
 }
 
@@ -95,6 +104,7 @@
     //box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 2%), 0 0 0 1px rgb(10 10 10 / 2%);
 
     color: #999999;
+    color: var(--subheader-color);
     font-size: 13px;
 
     a {
@@ -105,9 +115,11 @@
         //     color: #ffffff;
         // }
         color: #cecece;
+        color: var(--subheader-a-color);
 
         &:hover {
             color: #fff;
+            color: var(--subheader-a-color-hover);
         }
     }
 
@@ -154,9 +166,13 @@
 .content-block {
     //@extend .shadowed;
     //background-color: white;
+    box-shadow: var(--context-box-boxshadow);
     background-color: #161b22;
+    background-color: var(--modal-bg);
     border: 1px solid #30363d;
+    border: 1px solid var(--normal-border-color);
     color: #d5d5d5;
+    color: var(--modal-color);
     padding: 1.5em;
     border-radius: 6px;
 }
@@ -193,9 +209,11 @@ button.cpy-from {
 
 #saved-note-tips {
     background: #30363d;
+    background: var(--savednote-tip-bg);
     padding: 0.3em 1em;
     /* border: 1px solid #dccfa2; */
     color: #dadada;
+    color: var(--form-color);
 
     span {
         display: block;

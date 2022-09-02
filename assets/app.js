@@ -6,6 +6,7 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
+import './styles/themes.scss';
 import './styles/layout.scss';
 import './styles/app.scss';
 
@@ -22,7 +23,28 @@ import SecureNote from './noteApp.js';
 import moment from 'moment';
 
 
+var theme = 'light';
+
+
+theme = window.getTheme();
+
+
 $(function() {
+
+    try {
+        
+        if(theme == 'light') {
+            $('#theme-switch').attr('checked', 'checked'); //.trigger('change');
+        }
+
+        $('#theme-switch').on('input change', function(){
+            var theme = $(this).is(':checked') ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            document.documentElement.setAttribute('data-theme', theme);
+        });
+    } catch (e) {
+        
+    }
     
     $('#container-note-view').each(function(){
 
