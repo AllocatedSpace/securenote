@@ -441,7 +441,7 @@ $(function() {
                             savedNoteModal.show();
 
                             $form[0].reset();
-                            $form.find('#destroy-on-read').trigger('update');
+                            $('#destroy-on-read').trigger('change');
                             submitButton.attr('disabled', false);
 
 
