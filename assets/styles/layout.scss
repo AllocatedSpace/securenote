@@ -40,15 +40,16 @@
         height: 30.34px;
 
 
-        @media(max-width: 490px) {
-            width: 160px;
-            height: 32.2px;
-        }
+        // @media(max-width: 490px) {
+        //     width: 160px;
+        //     height: 32.2px;
+        // }
 
         @media(max-width: 767px) {
             width: 200px;
             height: auto;
             margin-left: 0;
+            max-width: 50vw;
         }
 
         .cls-1{fill:#d5d5d5; fill: var(--header-cls-1-fill);}

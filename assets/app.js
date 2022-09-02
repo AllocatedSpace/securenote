@@ -338,6 +338,8 @@ $(function() {
             }
         });
 
+        $('#destroy-on-read').trigger('change');
+
         $('form#form-note-create').on('submit', function(e){
 
             e.preventDefault();
@@ -382,9 +384,9 @@ $(function() {
                         var data = {
                             encrypted: encryptedB65,
                             keyhash: keyHash,
-                            destroyonread: $form.find('input[name="destroy-on-read"]').is(':checked') ? 1: 0,
+                            destroyonread: $form.find('#destroy-on-read').is(':checked') ? 1: 0,
                             ttl: $form.find('select[name="ttl"] option:selected').attr('value'),
-                            allowdelete: $form.find('input[name="allow-delete"]').is(':checked') ? 1: 0,
+                            allowdelete: $form.find('#allow-delete').is(':checked') ? 1: 0,
                             recaptchaToken: recaptchaToken
                         };
 
@@ -418,11 +420,11 @@ $(function() {
 
                             $('<div />').html('&#8729; Max TTL: ' + $form.find('select[name="ttl"] option:selected').text()).appendTo(toolTipElement);
 
-                            if($form.find('input[name="destroy-on-read"]').is(':checked')) {
+                            if($form.find('#destroy-on-read').is(':checked')) {
                                 $('<div />').html('&#8729; Self-destructs').appendTo(toolTipElement);
                             }
                             
-                            if($form.find('input[name="allow-delete"]').is(':checked')) {
+                            if($form.find('#allow-delete').is(':checked')) {
                                 $('<div />').html('&#8729; Manually deleteable').appendTo(toolTipElement);
                             }
 
@@ -432,8 +434,8 @@ $(function() {
                             //other tips
                             $('#saved-note-tips').find('span').remove();
                             $('<span class="mb-md-1" />').html('<strong>Max TTL:</strong> ' + $form.find('select[name="ttl"] option:selected').text()).appendTo($('#saved-note-tips'));
-                            $('<span class="mb-md-1" />').html('<strong>Self Destructs when Read:</strong> ' + ($form.find('input[name="destroy-on-read"]').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
-                            $('<span class="mb-md-1" />').html('<strong>Manually Deletable:</strong> ' + ($form.find('input[name="allow-delete"]').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
+                            $('<span class="mb-md-1" />').html('<strong>Self Destructs when Read:</strong> ' + ($form.find('#destroy-on-read').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
+                            $('<span class="mb-md-1" />').html('<strong>Manually Deletable:</strong> ' + ($form.find('#allow-delete').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
 
 
                             savedNoteModal.show();
