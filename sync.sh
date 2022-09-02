@@ -9,5 +9,6 @@ echo "Writing $buildversion - $builddate to templates/build-id.html"
 echo "$buildversion - $builddate" > templates/build-id.html
 
 
-sudo /var/www/lib/sbin/fsync -d assets/* config/* migrations/* public/favicon/* public/images/* public/favicon.ico \
- public/robots.txt public/sitemap.xml src/* templates/* tests/* translations/* package.json sync.sh webpack.config.js
+sudo /var/www/lib/sbin/fsync -c -d assets/* assets/**/* config/* config/**/* migrations/* migrations/*/** public/favicon/* \
+ public/favicon/**/* public/images/* public/images/**/* public/favicon.ico \
+ public/robots.txt public/sitemap.xml src/* src/**/* templates/**/* templates/* tests/* tests/**/* translations/* translations/**/* package.json sync.sh webpack.config.js
