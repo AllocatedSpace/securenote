@@ -3,44 +3,70 @@
 #    controller: App\Controller\DefaultController::index
 
 
+# Secure Note
+
 page_howitworks:
+    host: securenote.{domain}
     path: /how-it-works
-    controller: App\Controller\PageController::howItWorks
+    controller: App\Controller\NotePageController::howItWorks
+    requirements:
+        domain: .+
 
 page_privacy:
+    host: securenote.{domain}
     path: /privacy
-    controller: App\Controller\PageController::privacy
+    controller: App\Controller\NotePageController::privacy
+    requirements:
+        domain: .+
 
 app_note_test:
+    host: securenote.dev.metricmarketing.ca
     path: /note-crypto-test
     controller: App\Controller\NoteController::test
 
 app_note_index:
+    host: securenote.{domain}
     path: /
     controller: App\Controller\NoteController::createView
     methods: GET
+    requirements:
+        domain: .+
 
 app_note_create_save:
+    host: securenote.{domain}
     path: /
     controller: App\Controller\NoteController::storeNote
     methods: POST
-
+    requirements:
+        domain: .+
+        
 app_note_view:
+    host: securenote.{domain}
     path: /n/{guid}
     controller: App\Controller\NoteController::viewIndex
     methods: GET
 
 app_note_read:
+    host: securenote.{domain}
     path: /n/{guid}
     controller: App\Controller\NoteController::getNote
     methods: POST
-
+    requirements:
+        domain: .+
+        
 app_note_manual_delete:
+    host: securenote.{domain}
     path: /delete/n/{guid}
     controller: App\Controller\NoteController::deleteNote
     methods: POST
-
+    requirements:
+        domain: .+
+        
 app_note_cron:
+    host: securenote.{domain}
     path: /cron/{cronkey}
     controller: App\Controller\NoteController::cron
     methods: GET
+    requirements:
+        domain: .+
+            
