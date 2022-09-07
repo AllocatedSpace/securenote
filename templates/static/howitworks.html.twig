@@ -37,12 +37,23 @@
                 <ul>
                     <h4>Browser</h4>
                     <ol class="mb-3">
-                        <li>Generates a random key-string using <code><a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues">window.crypto.getRandomValues()</a></code></li>
+                        <li>Generates a random key-string using <code><a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues">window.crypto.getRandomValues()</a></code>. Real example: <code>bSdy57tGJhLoXwhPEGf2CbwRKXhf9vvC</code></li>
                         <li>Using the random key-string, your browser generates a <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#supported_algorithms"><code>AES-CBC</code></a> key using <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey" target="_blank"><code>crypto.subtle.importKey()</code></a> </li>
                         <li>Encrypts the note with AES 128-bit encryption using <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt"><code>crypto.subtle.encrypt()</code></a></li>
                         <li>Generates a SHA-256 hash with <a rel="external nofollow noopener" target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest"><code>crypto.subtle.digest()</code></a> on the key-string</li>
                         <li>Uploads the AES 128-bit encrypted data and the SHA-256 key-hash to the server via an 
-                            <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send#example_post" target="_blank">XHR POST</a> with a the following payload <code>{encryptedData, keyHash, ExpireData, SelfDestructable, Deletable, ...}</code></li>
+                            <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send#example_post" target="_blank">XHR POST</a> with a payload that describes the note
+                            (<code>{encryptedData, keyHash, ExpireData, SelfDestructable, Deletable, ...}</code>). 
+                            <br />Real example: <code><pre>
+{
+    "encrypted": "y6YM8xSDidHpnpCTqRVxyw==", 
+    "keyhash": "92b52c6cbf04baace35afa437ae26e5b418c87e193da72a16c7806187b085ed3", 
+    "destroyonread": 1, 
+    "ttl": "7D", 
+    "allowdelete": 0
+}
+                        </pre></code>
+                        </li>
                     </ol>
 
                     <h4>Server</h4>
@@ -87,7 +98,18 @@
                         <li>If found, and is self-destructing, and <code>{..., confirmDestroy: true}</code> is in the payload:</li>
                             <ol>
                             <li>Server purges the encrypted-data from the record, and stores the date of destruction</li>
-                            <li>Server returns <code>{encryptedData, expireDate, ...)}</code></li>
+                            <li>Server returns <code>{encryptedData, expireDate, ...}</code>
+                                <br />
+                                Real example: <code><pre>
+{
+    "encrypted": "y6YM8xSDidHpnpCTqRVxyw==",
+    "was_deleted": true,
+    "expires": "2022-09-13T21:17:25-05:00",
+    "offer_delete": false,
+    "destroyed": "2022-09-06T21:23:34-05:00"
+}                            
+                                </pre></code>
+                            </li>
                             </ol>
                         <li>If found, but destroyed (no encrypted data):</li>
                             <ol>
