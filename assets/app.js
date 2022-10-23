@@ -303,16 +303,6 @@ $(function() {
 
         var savedNoteModal = new Modal(document.getElementById('createdNoteMdlDlg'), {backdrop: 'static'});
 
-        
-        // $('#create-a-new-note').on('click', function(e){
-        //     e.preventDefault();
-        //     //$('.saved-link-display').hide();
-        //     $('.status-updates').hide();
-        //     $('#create-form-controls').hide();
-        //     $('#create-a-new-note').hide();
-
-        // });
-
         $('#destroy-on-read').on('change', function(){
             if($(this).is(':checked')) {
                 //copy original check of allow-delete
