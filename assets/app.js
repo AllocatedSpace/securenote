@@ -485,6 +485,8 @@ $(function() {
 
         var lengthDisplay = $('#password-length-display');
 
+        var refreshButton = $('#refresh-password');
+
         var generatePassword = function(){
             var charset = '';
             var length = $('#password-length').val();
@@ -549,6 +551,11 @@ $(function() {
 
         $('#inc-upper-alpha, #inc-lower-alpha, #inc-numbers, #inc-symbols, #exc-specials, #exc-ambig').on('input', function(){
             generatePassword();
+        });
+
+        refreshButton.on('click', function(e){
+           e.preventDefault();
+           generatePassword();
         });
 
 
