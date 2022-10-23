@@ -52,6 +52,8 @@ app_note_view:
     path: /n/{guid}
     controller: App\Controller\NoteController::viewIndex
     methods: GET
+    requirements:
+        domain: .+
 
 app_note_read:
     host: securenote.{domain}

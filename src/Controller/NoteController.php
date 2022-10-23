@@ -138,7 +138,7 @@ class NoteController extends AbstractController
         }
 
 
-        //die('the note?' . $note->getId() . '; the hash: ' . $key . '; the data: ' . $note->getEncrypted());
+        
 
         //we will just return the data. and whether or not it's been destroyed or will continue to live
 
@@ -464,7 +464,7 @@ class NoteController extends AbstractController
             ], $status = 404);
         }
 
-        //die('the note?' . $note->getId() . '; the hash: ' . $key . '; the data: ' . $note->getEncrypted());
+        
 
        
         $decrypted = '';
