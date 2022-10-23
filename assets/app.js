@@ -572,12 +572,12 @@ $('button.cpy-from').each(function(){
 
     var _this = $(this);
 
+    var tooltip = $(this).find('.tooltiptext').first();
     var originalText = tooltip.html();
 
     _this.on('click', function(e){
         e.preventDefault();
-        var inputPath = $($(this).data('inputpath'));
-        var tooltip = $(this).find('.tooltiptext').first();    
+        var inputPath = $($(this).data('inputpath'));  
         var tooltipHTMLAfterCopy = $(this).find('.tooltiptext-upon-copy').first().html();
         var copyText = inputPath[0]; //document.getElementById("myInput");
         copyText.select();
@@ -590,7 +590,6 @@ $('button.cpy-from').each(function(){
 
     _this.on('mouseout', function(e){
         //var tooltip = document.getElementById("myTooltip");
-        var tooltip = $(this).find('.tooltiptext').first();
         tooltip.html(originalText);
     });
 
