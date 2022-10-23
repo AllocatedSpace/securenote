@@ -255,3 +255,53 @@ a {
 // 	box-shadow: inset 0px -2px 0px 0rem rgb(253 174 13 / 69%); 
 // }
 
+.slidecontainer {
+	width: 100%; /* Width of the outside container */
+}
+  
+
+.slider {
+	appearance: none;
+	-webkit-appearance: none;
+    width: 300px;
+    height: 15px;
+    border-radius: 5px;
+    background: #eeeeeea8;
+    outline: none;
+    //opacity: 0.7;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+	//opacity: 1; /* Fully shown on mouse-over */
+	background: #eeeeee;
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none; /* Override default look */
+	appearance: none;
+	width: 25px; /* Set a specific slider handle width */
+	height: 25px; /* Slider handle height */
+    background: #ffc51b;
+    background: var(--header-cls-3-fill);
+
+	cursor: pointer; /* Cursor on hover */
+	border-radius: 25px;
+}
+
+.slider::-moz-range-thumb {
+	width: 25px; /* Set a specific slider handle width */
+	height: 25px; /* Slider handle height */
+	background: #ffc51b;
+    background: var(--header-cls-3-fill);
+	cursor: pointer; /* Cursor on hover */
+	border-radius: 25px;
+}
+
+#generated-password {
+	font-size: 25px;
+    font-family: 'Courier New', courier, sans-serif;
+}

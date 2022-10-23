@@ -37,6 +37,19 @@ class NotePageController extends AbstractController
         return $response;
     }
 
+
+    public function generatePassword(): Response
+    {
+        $response = $this->render('static/generate-password.html.twig', []);
+
+        $response->setPublic();
+        $response->setMaxAge(14400); //4 hours
+
+        // (optional) set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
+    }
     
 
 

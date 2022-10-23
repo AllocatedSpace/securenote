@@ -20,6 +20,7 @@ import { Modal } from 'bootstrap';
 
 import $ from 'jquery';
 import SecureNote from './noteApp.js';
+import PasswordGenerator from './passwordApp.js';
 import moment from 'moment';
 
 
@@ -500,6 +501,86 @@ $(function() {
             $('#tst-decrypted').text(decryptedText);
 
         })();
+
+    });
+
+
+    $('#container-generate-password').each(function(){
+
+        var passGenerator = new PasswordGenerator();
+
+        var lengthDisplay = $('#password-length-display');
+
+        var generatePassword = function(){
+            var charset = '';
+            var length = $('#password-length').val();
+
+            if(length <= 0) {
+                length = 4;
+            }
+
+            var excludeAmbigious = $('#exc-ambig').is(':checked');
+            var excludeSpecials = $('#exc-specials').is(':checked');
+
+            if($('#inc-upper-alpha').is(':checked')) {
+                if(excludeAmbigious) {
+                    charset += 'ABCDEFGHJKMNPQRSTUVWXYZ';
+                } else {
+                    charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                }
+                
+            }
+
+            if($('#inc-lower-alpha').is(':checked')) {
+               
+                if(excludeAmbigious) {
+                    charset += 'abcdefghjkmnpqrstuvwxyz';
+                } else {
+                    charset += 'abcdefghijklmnopqrstuvwxyz';
+                }
+            }
+
+            if($('#inc-numbers').is(':checked')) {
+
+                if(excludeAmbigious) {
+                    charset += '23456789';
+                } else {
+                    charset += '0123456789';
+                }
+                
+            }
+
+            if($('#inc-symbols').is(':checked')) {
+                if(excludeSpecials) {
+                    charset += '!@#$%^&*()_-+=~`{[}]\'";:.<>>,/?|';
+                } else {
+                    charset += '!@#$%^&*()_-+=~`{[}]\'";:.<>>,/?|\\';
+                }
+                
+            }
+
+            if(charset.length == 0) {
+                $('#generated-password').val('select atleast one character set option :)');
+                return;
+            }
+
+
+            $('#generated-password').val(passGenerator.getPassword(length, charset));
+        };
+
+        $('#password-length').on('input', function(){
+            lengthDisplay.text($(this).val());
+            generatePassword();
+        });
+
+        $('#inc-upper-alpha, #inc-lower-alpha, #inc-numbers, #inc-symbols, #exc-specials, #exc-ambig').on('input', function(){
+            generatePassword();
+        });
+
+
+        $('#password-length').trigger('input');
+        
+        
 
     });
 

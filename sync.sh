@@ -1,5 +1,6 @@
 #!/bin/bash
 
+## on remote, yarn build && php bin/console cache:clear
 
 # buildversion="$1"
 buildversion=$(git describe --tags --long | sed --expression='s/-/./g')

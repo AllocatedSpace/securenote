@@ -19,6 +19,13 @@ page_privacy:
     requirements:
         domain: .+
 
+app_password_index:
+    host: securenote.{domain}
+    path: /generate-password
+    controller: App\Controller\NotePageController::generatePassword
+    requirements:
+        domain: .+
+
 app_note_test:
     host: securenote.dev.metricmarketing.ca
     path: /note-crypto-test
