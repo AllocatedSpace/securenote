@@ -1,34 +1,18 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
- */
-
-// any CSS you import will output into a single css file (app.css in this case)
 import './styles/themes.scss';
 import './styles/layout.scss';
 import './styles/app.scss';
 
-// start the Stimulus application
-//import './bootstrap';
-
-
 require('bootstrap');
 import { Modal } from 'bootstrap';
-
 
 import $ from 'jquery';
 import SecureNote from './noteApp.js';
 import PasswordGenerator from './passwordApp.js';
 import moment from 'moment';
 
-
 var theme = 'light';
 
-
 theme = window.getTheme();
-
 
 $(function() {
 
@@ -552,7 +536,7 @@ $(function() {
 
             if($('#inc-symbols').is(':checked')) {
                 if(excludeSpecials) {
-                    charset += '!@#$%^&*()_-+=~`{[}]\'";:.<>>,/?|';
+                    charset += '!@#$%^&*()_-+=~`{[}];:.<>>,/?|';
                 } else {
                     charset += '!@#$%^&*()_-+=~`{[}]\'";:.<>>,/?|\\';
                 }

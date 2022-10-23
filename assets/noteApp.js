@@ -1,11 +1,10 @@
 async function getHash(str) {
 
     const msgUint8 = new TextEncoder().encode(str); 
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);           // hash the message
-    const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
-    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); 
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); 
     return hashHex;
-    //return await crypto.subtle.digest("SHA-256", str2ab(str));
 }
 
 function prepareTextForEncryption(str) {
@@ -125,8 +124,6 @@ async function importKey(keyData) {
 }
 
 
-
-
 export default class SecureNote {
 
     constructor(keyText) {
@@ -158,8 +155,6 @@ export default class SecureNote {
         var encrypted = await encrypt(sourceText, this.keyData, this.iv);
 
         return ab2b64(encrypted); 
-        // console.log('encrypted', encrypted);
-        // $('#tst-encrypted').text( ab2b64(encrypted) );
     }
 
     async decrypt(encryptedb64) { //returns string, the decrypted text
