@@ -572,6 +572,8 @@ $('button.cpy-from').each(function(){
 
     var _this = $(this);
 
+    var originalText = tooltip.html();
+
     _this.on('click', function(e){
         e.preventDefault();
         var inputPath = $($(this).data('inputpath'));
@@ -589,7 +591,7 @@ $('button.cpy-from').each(function(){
     _this.on('mouseout', function(e){
         //var tooltip = document.getElementById("myTooltip");
         var tooltip = $(this).find('.tooltiptext').first();
-        tooltip.html("Copy Link to clipboard");
+        tooltip.html(originalText);
     });
 
 });
