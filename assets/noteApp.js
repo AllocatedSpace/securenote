@@ -1,5 +1,4 @@
 async function getHash(str) {
-
     const msgUint8 = new TextEncoder().encode(str); 
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); 
     const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -28,8 +27,8 @@ function str2ab(str) {
     return buf;
 }
 
-// https://stackoverflow.com/a/21797381/9014097
 function b642ab(base64) {
+    // https://stackoverflow.com/a/21797381/9014097
     var binary_string = window.atob(base64);
     var len = binary_string.length;
     var bytes = new Uint8Array(len);
@@ -56,6 +55,7 @@ function randomString(length) {
     var isOpera = Object.prototype.toString.call(window.opera) == '[object Opera]';
 
     if(window.crypto && window.crypto.getRandomValues){
+
         var values = new Uint32Array(length);
         window.crypto.getRandomValues(values);
 
@@ -66,6 +66,7 @@ function randomString(length) {
         return result;
 
     } else if(isOpera) {//Opera's Math.random is secure, see http://lists.w3.org/Archives/Public/public-webcrypto/2013Jan/0063.html
+       
         for(i=0; i<length; i++) {
             result += charset[Math.floor(Math.random()*charset.length)];
         }
@@ -75,40 +76,26 @@ function randomString(length) {
     else throw new Error("Your browser sucks and can't generate secure random numbers");
 }
 
-
 async function encrypt(sourceText, keyData, iv) {
     var key = await importKey(keyData);
     var data = str2ab(sourceText);
 
-    //console.log('encrypting', sourceText, ab2str(data));
-
-    //try {
-        return await crypto.subtle.encrypt(
+    return await crypto.subtle.encrypt(
         { name: "AES-CBC", iv: iv },
         key,
-        data //ArrayBuffer of data you want to encrypt
-        );
-    // } catch (ex) {
-    //     console.error("Error: Name: ", ex.name, ", Message: ", ex.message);
-    // }
-        
+        data 
+    );        
 }
 
 async function decrypt(encrypted, keyData, iv) {
     var key = await importKey(keyData);
     var data = b642ab(encrypted);
 
-    //console.log('decrypting', encrypted, ab2str(data));
-
-    //try {
-        return await crypto.subtle.decrypt(
+    return await crypto.subtle.decrypt(
         { name: "AES-CBC", iv: iv },
         key,
         data
-        );
-    // } catch (ex) {
-    //     console.error("Error: Name: ", ex.name, ", Message: ", ex.message);
-    // }
+    );
 }
 
 async function importKey(keyData) {
@@ -122,7 +109,6 @@ async function importKey(keyData) {
 
     return key;
 }
-
 
 export default class SecureNote {
 

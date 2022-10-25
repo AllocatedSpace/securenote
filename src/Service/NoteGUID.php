@@ -6,7 +6,7 @@ class NoteGUID
 {
     public static function uniqidReal($length = 26) 
     {
-        // uniqid gives 13 chars, but you could adjust it to your needs.
+
         if (function_exists("random_bytes")) 
         {
             $bytes = random_bytes(ceil($length / 2));

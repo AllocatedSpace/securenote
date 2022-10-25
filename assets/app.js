@@ -19,7 +19,7 @@ $(function() {
     try {
         
         if(theme == 'light') {
-            $('#theme-switch').attr('checked', 'checked'); //.trigger('change');
+            $('#theme-switch').attr('checked', 'checked'); 
         }
 
         $('#theme-switch').on('input change', function(){
@@ -39,7 +39,7 @@ $(function() {
             //server by sending GUID and the keyHash - if both do not match we'll not get any data back.
 
             var urlHash = (window.location.hash).replace('#', '');
-            var decryptingNoteApp = new SecureNote(urlHash); //pass the key
+            var decryptingNoteApp = new SecureNote(urlHash); 
 
             $('#status-updates-text').text('[Local] Creating key and calculating hash...').show();
 
@@ -48,7 +48,7 @@ $(function() {
             $(window).on('hashchange', function() {
                 (async () => {
                     urlHash = (window.location.hash).replace('#', '');
-                    decryptingNoteApp.setKey(urlHash); //pass the key
+                    decryptingNoteApp.setKey(urlHash); 
                     $('.loading-temporary').show();
                     $('#status-updates-text').text('[Local] Creating key and calculating hash...').show();
                     keyHash = await decryptingNoteApp.getKeyHash();
@@ -58,9 +58,6 @@ $(function() {
             });
 
             
-            // var decryptedText = await decryptingNoteApp.decrypt( $('#tst-encrypted').val() );
-            // $('#tst-decrypted').text(decryptedText);
-
             $('#confirm-destroy').on('click', function(){
 
                 $('.loading-temporary').show();
@@ -74,34 +71,35 @@ $(function() {
                         $.post(window.location.origin + window.location.pathname, {keyHash: keyHash, confirmDestroy: '1', recaptchaToken: recaptchaToken}, function(data){
                             //decrypt and show
                             (async () => {
+
                                 try {
+                                    
                                     $('#status-updates-text').text('[Local] Decrypting note...').show();
                                     var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
                                     
                                     $('.secretnote-group').show();
-                                    $('textarea#secretnote').show().text(decryptedText).autogrow(); //triggerHandler('change');
+                                    $('textarea#secretnote').show().text(decryptedText).autogrow(); 
 
                                     $('.loading-error').text("The note is now destroyed. Make sure to copy it before you leave this page, it's gone forever.").show();
                                     $('.alert-warning.confirmation-required').hide();
 
                                     if(data.offer_delete) {
                                         $('#delete-note').fadeIn('fast');
-                                    }
-
-                                    
+                                    }                                    
 
                                     gtag('event', 'confirm-destroy-note', { 'event_category': 'notes', 'event_label': 'Read and Destroy' });
-
 
                                 } catch (ex) {
                                     $('.loading-error').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message);
                                     $('.loading-error').show();
                                 }
+
                             })();
                         }, "json")
                         .fail(function(xhr, status, error) {
             
                             try {
+
                                 var response = JSON.parse(xhr.responseText);
                                 $('.loading-error').text(response.status).show();
             
@@ -116,7 +114,6 @@ $(function() {
             
                             } catch(e) {
                                 alert( error + ' : ' + xhr.responseText );
-            
                                 $('.loading-error').text('Unexpected response').show();
                             }
             
@@ -127,7 +124,6 @@ $(function() {
                             $('.loading-temporary').hide();
                         });;
 
-                        //captcha
                     });
                 }); //captcha
             });
@@ -157,9 +153,7 @@ $(function() {
                             $('#delete-note').fadeOut();
 
                             gtag('event', 'manual-destroy-note', { 'event_category': 'notes', 'event_label': 'Manual Delete' });
-                            
 
-                        
                         
                         }, "json")
                         .fail(function(xhr, status, error) {
@@ -189,7 +183,6 @@ $(function() {
                         .always(function() {
                             $('.loading-temporary').hide();
                         });;
-
                     });
                 }); //captcha
 
@@ -204,7 +197,6 @@ $(function() {
 
                 $('textarea#secretnote').text('').autogrow();
 
-
                 var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content');
 
                 grecaptcha.ready(function() {
@@ -213,26 +205,21 @@ $(function() {
                         $('#status-updates-text').text('Asking server for encrypted note...').show();
                         $.post(window.location.origin + window.location.pathname, {keyHash: keyHash, recaptchaToken: recaptchaToken}, function(data){
 
-
                             if(data.was_deleted) {
                                 $('.loading-error').text('This note has just self destructed... To die, to sleep, No more...').show();
                             } else if(data.expires) {
                                 $('.loading-error').text('This note will expire ' + moment(data.expires).from() + '.').show();
                             }
-            
+
                             //if the note will self-destruct, we have to ask for confirmation first
                             if(data.confirmDestroy) {
             
                                 $('.alert-warning.confirmation-required').show();
-
                                 $('#delete-note').hide();
             
                             } else {
 
-
-
                                 gtag('event', 'read-note', { 'event_category': 'notes', 'event_label': 'Read Note' });
-                               
 
                                 (async () => {
                                     //decrypt and show
@@ -240,8 +227,7 @@ $(function() {
                                         $('#status-updates-text').text('[Local] Decrypting note...').show();
                                         var decryptedText = await decryptingNoteApp.decrypt(data.encrypted);
                                         $('.secretnote-group').show();
-                                        $('textarea#secretnote').text(decryptedText).autogrow(); //.triggerHandler('change');
-                                        
+                                        $('textarea#secretnote').text(decryptedText).autogrow();                       
 
                                         if(data.offer_delete) {
                                             $('#delete-note').show();
@@ -254,7 +240,6 @@ $(function() {
                                 })();
                                 
                             }
-                        
             
                         }, "json")
                         .fail(function(xhr, status, error) {
@@ -320,15 +305,11 @@ $(function() {
             e.preventDefault();
             var $form = $(this);
             var submitButton = $form.find('button[type="submit"]');
-
-            var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content');
-
-            
+            var reCaptchaSiteKey = $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content');           
 
             submitButton.attr('disabled', true);
             $('#status-updates-text').text('[Local] Inspecting if you\'re a human (reCaptchaV3)...').show();
             $('.status-updates').removeClass('hidden');
-
 
             grecaptcha.ready(function() {
                 grecaptcha.execute(reCaptchaSiteKey, {action: 'createNote'}).then(function(recaptchaToken) {
@@ -339,10 +320,7 @@ $(function() {
 
                         var encryptingNoteApp = new SecureNote();
                         var key = encryptingNoteApp.getKey();
-                        var keyHash = await encryptingNoteApp.getKeyHash();
-        
-                        var encryptionError = false;
-        
+                        var keyHash = await encryptingNoteApp.getKeyHash();        
                         var encryptedB65 = '';
 
                         $('#status-updates-text').text('[Local] Encrypting...').show();
@@ -354,7 +332,6 @@ $(function() {
                             $('#status-updates-text').text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message).show();
                             return;
                         }
-                                        
         
                         var data = {
                             encrypted: encryptedB65,
@@ -365,22 +342,17 @@ $(function() {
                             recaptchaToken: recaptchaToken
                         };
 
-        
                         $('#status-updates-text').text('Uploading encrypted data to server for storage...').show();
-                        
                         gtag('event', 'create-note', { 'event_category': 'notes', 'event_label': 'Create Note' });
 
-        
                         $.post(window.location.origin + window.location.pathname, data, function(data){
         
-
                             $('#status-updates-text').text('[Local] Creating shareable link...').show();
         
                             $('#saved-link').html('');
                             $('#saved-note-tips').html();
 
                             var a = $('<a />')
-                                //.attr('target', '_blank')
                                 .attr('href', data.link + '#' + key)
                                 .text(data.link + '#' + key);
 
@@ -388,7 +360,6 @@ $(function() {
 
                             $('#saved-link-to-copy').val(data.link + '#' + key);
                             $('#saved-link-to-copy').attr('value', data.link + '#' + key);
-
 
                             var toolTipElement = $('<span />');
                             $('<div />').text('Copied Link!').appendTo(toolTipElement);
@@ -405,27 +376,19 @@ $(function() {
 
                             $('.saved-link-display .tooltiptext-upon-copy').html(toolTipElement.html());
 
-
                             //other tips
                             $('#saved-note-tips').find('span').remove();
                             $('<span class="mb-md-1" />').html('<strong>Max TTL:</strong> ' + $form.find('select[name="ttl"] option:selected').text()).appendTo($('#saved-note-tips'));
                             $('<span class="mb-md-1" />').html('<strong>Self Destructs when Read:</strong> ' + ($form.find('#destroy-on-read').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
                             $('<span class="mb-md-1" />').html('<strong>Manually Deletable:</strong> ' + ($form.find('#allow-delete').is(':checked') ? 'yes' : 'no')).appendTo($('#saved-note-tips'));
 
-
                             savedNoteModal.show();
 
                             $form[0].reset();
                             $('#destroy-on-read').trigger('change');
                             submitButton.attr('disabled', false);
-
-
                             $('.status-updates').addClass('hidden');
                             $('#status-updates-text').text('');
-                            //$('.saved-link-display').show();
-                            //$('#create-form-controls').hide();
-                            //$('#create-a-new-note').show();
-
                 
                         }, "json")
                         .fail(function(xhr, status, error) {
@@ -443,7 +406,6 @@ $(function() {
         
                     })();
 
-
                 });;
             });
 
@@ -452,8 +414,9 @@ $(function() {
 
 
 
+    //test sandbox
+    /*
     $('#container-note-test #btn-encrypt').on('click', function(){
-
         (async () => {
             var encryptingNoteApp = new SecureNote();
             $('#tst-key').text(encryptingNoteApp.getKey());
@@ -467,24 +430,20 @@ $(function() {
             // test descrypt:
 
             var decryptingNoteApp = new SecureNote($('#tst-key').text()); //pass the key
-        
             var decryptingKeyHash = await decryptingNoteApp.getKeyHash();
             $('#tst-key-hash-2').text(decryptingKeyHash);
             
             var decryptedText = await decryptingNoteApp.decrypt( $('#tst-encrypted').val() );
             $('#tst-decrypted').text(decryptedText);
-
         })();
-
     });
+    */
 
 
     $('#container-generate-password').each(function(){
 
         var passGenerator = new PasswordGenerator();
-
         var lengthDisplay = $('#password-length-display');
-
         var refreshButton = $('#refresh-password');
 
         var generatePassword = function(){
@@ -523,7 +482,6 @@ $(function() {
                 } else {
                     charset += '0123456789';
                 }
-                
             }
 
             if($('#inc-symbols').is(':checked')) {
@@ -532,14 +490,12 @@ $(function() {
                 } else {
                     charset += '!@#$%^&*()_-+=~`{[}]\'";:.<>>,/?|\\';
                 }
-                
             }
 
             if(charset.length == 0) {
                 $('#generated-password').val('select atleast one character set option :)');
                 return;
             }
-
 
             $('#generated-password').val(passGenerator.getPassword(length, charset));
         };
@@ -558,11 +514,8 @@ $(function() {
            generatePassword();
         });
 
-
         $('#password-length').trigger('input');
         
-        
-
     });
 
 });
@@ -579,17 +532,14 @@ $('button.cpy-from').each(function(){
         e.preventDefault();
         var inputPath = $($(this).data('inputpath'));  
         var tooltipHTMLAfterCopy = $(this).find('.tooltiptext-upon-copy').first().html();
-        var copyText = inputPath[0]; //document.getElementById("myInput");
+        var copyText = inputPath[0]; 
         copyText.select();
         copyText.setSelectionRange(0, 99999);
         navigator.clipboard.writeText(copyText.value);
-        
-        //var tooltip = document.getElementById("myTooltip");
         tooltip.html(tooltipHTMLAfterCopy);
     });
 
     _this.on('mouseout', function(e){
-        //var tooltip = document.getElementById("myTooltip");
         tooltip.html(originalText);
     });
 
@@ -604,7 +554,6 @@ $(function() {
      * 
      * http://github.com/jaz303/jquery-grab-bag/tree/master/javascripts/jquery.autogrow-textarea.js
      */
-
     $.fn.autogrow = function(options)
     {
         return this.filter('textarea').each(function()

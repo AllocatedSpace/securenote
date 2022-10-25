@@ -1,12 +1,7 @@
-
-
 // root/default variables, dark theme
 :root {
     --background-color: rgb(255 255 255);
     --color: rgb(214 214 214);
-
-    --a-color: #88b3f2;
-    --a-color-hover: #cde0fc;
 
     --a-color: #e5b41a;
     --a-color-hover: #ffd34a;
@@ -56,7 +51,6 @@
     }
     
     .alert-warning {
-        //--bs-alert-color: #c1daf7;
         --bs-alert-color: #f7dfc1;
         --bs-alert-bg: #35404e;
         --bs-alert-border-color: #7b6e59;

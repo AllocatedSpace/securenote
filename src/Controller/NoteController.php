@@ -12,45 +12,9 @@ use App\Service\SaferCrypto;
 use App\Service\NoteGUID;
 use App\Service\Cron;
 use App\Service\RecaptchaV3Helper;
-// ...
 
 class NoteController extends AbstractController
 {
-
-    public function test(): Response
-    {
-        $guid = NoteGUID::uniqidReal();
-        $key = NoteGUID::uniqidReal();
-        
-
-
-        $message = 'Lorem ipsum solar dot et!!';
-        $key = $key; //hex2bin('000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f');
-
-        $encrypted = SaferCrypto::encrypt($message, $key);
-        $decrypted = SaferCrypto::decrypt($encrypted, $key);
-        try {
-            $decryptedFail = SaferCrypto::decrypt($encrypted, $key . "asaaa");
-        }
-        catch(\Exception $e)
-        {
-            if($e->getMessage() == 'Encryption failure')
-            {
-                $decryptedFail = 'bad key';
-            }
-        }
-
-        $GOOGLE_RECAPTCHA_SITE_KEY = $this->getParameter('app.GOOGLE_RECAPTCHA_SITE_KEY');
-
-        return $this->render('note/test.html.twig', [
-            'guid' => $guid,
-            'key' => $key,
-            'encrypted' => base64_encode($encrypted),
-            'decrypted' => $decrypted,
-            'decryptedFail' => base64_encode($decryptedFail),
-            'GOOGLE_RECAPTCHA_SITE_KEY' => $GOOGLE_RECAPTCHA_SITE_KEY
-        ]);
-    }
 
     public function viewIndex(): Response
     {
@@ -62,8 +26,6 @@ class NoteController extends AbstractController
 
         $response->setPublic();
         $response->setMaxAge(14400); //4 hours
-
-        // (optional) set a custom Cache-Control directive
         $response->headers->addCacheControlDirective('must-revalidate', true);
 
         return $response;
@@ -84,22 +46,19 @@ class NoteController extends AbstractController
                             $request->server->get('HTTP_CF_CONNECTING_IP') : 
                             $request->server->get('REMOTE_ADDR'));
 
-        if ($resp->isSuccess()) {
-            // Verified!
-        } else {
+        if (!$resp->isSuccess()) 
+        {
             $errors = $resp->getErrorCodes();
+
             return new JsonResponse([
                 'status' => implode('; ', RecaptchaV3Helper::getErrorDescriptions($errors))
             ], $status = 403);
-        }
-        // recaptcha
+        } // recaptcha
 
         $this->tryCron($doctrine, $request);
 
-
         $keyHash = $request->request->get('keyHash'); //POST
         $destroyOnReadConfirmed =  $request->request->get('confirmDestroy') == '1';
-        
 
         if(!$request->isXmlHttpRequest() || !preg_match('~^[a-z0-9]{64}$~', $keyHash) || !preg_match('~^[a-z0-9]{26}$~', $guid))
         {
@@ -116,7 +75,6 @@ class NoteController extends AbstractController
                 'status' => 'Note doesn\'t exist or has expired.'
             ], $status = 404);
         }
-
 
         //if destroyed, return so
         if($destroyedOn = $note->getDestroyed())
@@ -135,10 +93,7 @@ class NoteController extends AbstractController
                 'confirmDestroy' => true
             ], $status = 200);
 
-        }
-
-
-        
+        }      
 
         //we will just return the data. and whether or not it's been destroyed or will continue to live
 
@@ -154,7 +109,6 @@ class NoteController extends AbstractController
 
             $entityManager->flush();
         }
-
 
         return new JsonResponse([
             'encrypted' => $encryptedData,
@@ -181,22 +135,18 @@ class NoteController extends AbstractController
                             $request->server->get('HTTP_CF_CONNECTING_IP') : 
                             $request->server->get('REMOTE_ADDR'));
 
-        if ($resp->isSuccess()) {
-            // Verified!
-        } else {
+        if (!$resp->isSuccess()) 
+        {
             $errors = $resp->getErrorCodes();
             return new JsonResponse([
                 'status' => implode('; ', RecaptchaV3Helper::getErrorDescriptions($errors))
             ], $status = 403);
-        }
-        // recaptcha
+        } // recaptcha
 
         $this->tryCron($doctrine, $request);
 
-
         $keyHash = $request->request->get('keyHash'); //POST
         $confirmDestroy =  $request->request->get('confirmDestroy') == '1';
-                
 
         if(!$confirmDestroy || !$request->isXmlHttpRequest() || !preg_match('~^[a-z0-9]{64}$~', $keyHash) || !preg_match('~^[a-z0-9]{26}$~', $guid))
         {
@@ -213,7 +163,6 @@ class NoteController extends AbstractController
                 'status' => 'Note doesn\'t exist or has expired.'
             ], $status = 404);
         }
-
 
         //if destroyed, return so
         if($destroyedOn = $note->getDestroyed())
@@ -247,7 +196,6 @@ class NoteController extends AbstractController
         
     }
 
-
     public function createView(ManagerRegistry $doctrine, Request $request): Response
     {
 
@@ -264,9 +212,7 @@ class NoteController extends AbstractController
         {
             $REAL_CRON_KEY = $this->getParameter('app.CRON_KEY');
             
-            
-            // this has too much overhead when the DB is small,
-            // just do it directly for now
+            // too much overhead 
             //Cron::startCron($REAL_CRON_KEY, $request); 
 
             $doctrine->getRepository(Note::class)->destroyExpired();
@@ -274,12 +220,9 @@ class NoteController extends AbstractController
         }
     }
 
-    //
 
     public function storeNote(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
-
-
         $GOOGLE_RECAPTCHA_SECRET = $this->getParameter('app.GOOGLE_RECAPTCHA_SECRET');
         $recaptchaToken = $request->request->get('recaptchaToken'); 
 
@@ -292,26 +235,20 @@ class NoteController extends AbstractController
                             $request->server->get('HTTP_CF_CONNECTING_IP') : 
                             $request->server->get('REMOTE_ADDR'));
 
-        if ($resp->isSuccess()) {
-            // Verified!
-        } else {
+        if (!$resp->isSuccess()) 
+        {
             $errors = $resp->getErrorCodes();
             return new JsonResponse([
                 'status' => implode('; ', RecaptchaV3Helper::getErrorDescriptions($errors))
             ], $status = 403);
-        }
-        // recaptcha
+        } // recaptcha
 
         $this->tryCron($doctrine, $request);
 
-
         $guid = NoteGUID::uniqidReal();
-
         $encrypted = $request->request->get('encrypted'); 
         $keyhash = $request->request->get('keyhash'); 
         $destroyOnRead = $request->request->get('destroyonread') == '1';
-
-
         $rawTTL = $request->request->get('ttl');
         $TTLUnit = '';
         $TTLValue = '';
@@ -346,8 +283,7 @@ class NoteController extends AbstractController
 
             $TTLUnit = "day";
         }
-
-        if($TTLUnit == 'H')
+        elseif($TTLUnit == 'H')
         { 
             if($TTLValue > 24)
             {
@@ -358,8 +294,7 @@ class NoteController extends AbstractController
 
             $TTLUnit = "hour";
         }
-
-        if($TTLUnit == 'M')
+        elseif($TTLUnit == 'M')
         { 
             if($TTLValue > 60)
             {
@@ -370,10 +305,8 @@ class NoteController extends AbstractController
 
             $TTLUnit = "minute";
         }
-
        
         $allowDelete = $request->request->get('allowdelete') == '1'; 
-
 
         if(strlen($encrypted) > 512000) //
         {
@@ -399,7 +332,6 @@ class NoteController extends AbstractController
         $entityManager->persist($note);
         $entityManager->flush();
 
-
         $httpHost = $request->server->get('HTTP_HOST');
 
         return new JsonResponse([
@@ -407,110 +339,10 @@ class NoteController extends AbstractController
         ]);
     }
 
-
-    public function createSaveServerEncryption(ManagerRegistry $doctrine, Request $request): JsonResponse
-    {
-        $guid = NoteGUID::uniqidReal();
-        $key = NoteGUID::uniqidReal();
-
-        $securenote = $request->request->get('securenote'); //POST
-        $destroyOnRead = $request->request->get('destroyonread') == '1'; //POST
-        $daysToLive = max(1, min(30, intval($request->request->get('daystolive')))); //1 - 30
-
-        $encrypted = SaferCrypto::encrypt($securenote, $key);
-
-        $entityManager = $doctrine->getManager();
-
-        $note = new Note();
-        $note->setGuid($guid);
-        $note->setEncrypted(base64_encode($encrypted));
-        $note->setDestroyOnRead($destroyOnRead);
-
-        $expire = new \DateTime(); 
-        $expire->add(\DateInterval::createFromDateString($daysToLive . ' day'));
-        $note->setExpire($expire);
-
-        $entityManager->persist($note);
-        $entityManager->flush();
-
-
-        $httpHost = $request->server->get('HTTP_HOST');
-
-        return new JsonResponse([
-            'link' => "https://{$httpHost}/n/{$guid}#{$key}",
-        ]);
-    }
-
-
-    public function readServerDecryption(ManagerRegistry $doctrine, Request $request, string $guid): JsonResponse
-    {
-
-        $key = $request->request->get('key'); //POST
-        
-
-        if(!$request->isXmlHttpRequest() || !preg_match('~^[a-z0-9]{26}$~', $key) || !preg_match('~^[a-z0-9]{26}$~', $guid))
-        {
-            return new JsonResponse([
-                'status' => 'Bad Request'
-            ], $status = 400);
-        }        
-
-        $note = $doctrine->getRepository(Note::class)->findOneByGuid($guid);
-        
-        if(!$note)
-        {
-            return new JsonResponse([
-                'status' => 'Note doesn\'t exist or has expired.'
-            ], $status = 404);
-        }
-
-        
-
-       
-        $decrypted = '';
-
-        try {
-            
-            $decrypted = SaferCrypto::decrypt(base64_decode(stream_get_contents($note->getEncrypted())), $key);
-
-        }
-        catch(\Exception $e)
-        {
-            if($e->getMessage() == 'Encryption failure')
-            {
-                //bad key;
-                return new JsonResponse([
-                    'status' => 'Note doesn\'t exist or has expired.'
-                ], $status = 404);
-            }
-            else
-            {
-                return new JsonResponse([
-                    'status' => $e->getMessage()
-                ], $status = 500);
-            }
-        }
-
-        $deleteOnRead = $note->isDestroyOnRead();
-        if($deleteOnRead)
-        {
-            $entityManager = $doctrine->getManager();
-            $entityManager->remove($note);
-            $entityManager->flush();
-        }
-
-        return new JsonResponse([
-            'decrypted' => $decrypted,
-            'was_deleted' => $deleteOnRead
-        ]);
-        
-    }
-
     public function cron(ManagerRegistry $doctrine, Request $request, string $cronkey): JsonResponse
     {
 
         //sleep(8); for TIMEOUT testing
-
         $REAL_CRON_KEY = $this->getParameter('app.CRON_KEY');
 
         if($REAL_CRON_KEY != $cronkey)
@@ -527,6 +359,41 @@ class NoteController extends AbstractController
         ]);
         
     }
+
+    /*
+    public function test(): Response
+    {
+        $guid = NoteGUID::uniqidReal();
+        $key = NoteGUID::uniqidReal();
+        
+        $message = 'Lorem ipsum solar dot et!!';
+        $key = $key; //hex2bin('000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f');
+
+        $encrypted = SaferCrypto::encrypt($message, $key);
+        $decrypted = SaferCrypto::decrypt($encrypted, $key);
+        try {
+            $decryptedFail = SaferCrypto::decrypt($encrypted, $key . "asaaa");
+        }
+        catch(\Exception $e)
+        {
+            if($e->getMessage() == 'Encryption failure')
+            {
+                $decryptedFail = 'bad key';
+            }
+        }
+
+        $GOOGLE_RECAPTCHA_SITE_KEY = $this->getParameter('app.GOOGLE_RECAPTCHA_SITE_KEY');
+
+        return $this->render('note/test.html.twig', [
+            'guid' => $guid,
+            'key' => $key,
+            'encrypted' => base64_encode($encrypted),
+            'decrypted' => $decrypted,
+            'decryptedFail' => base64_encode($decryptedFail),
+            'GOOGLE_RECAPTCHA_SITE_KEY' => $GOOGLE_RECAPTCHA_SITE_KEY
+        ]);
+    }
+    */
 
 
 }

@@ -55,21 +55,6 @@ class NoteRepository extends ServiceEntityRepository
 
     }
 
-//    /**
-//     * @return Note[] Returns an array of Note objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('n')
-//            ->andWhere('n.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('n.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
    public function findOneByGuid($value): ?Note
    {
        return $this->createQueryBuilder('n')
@@ -91,4 +76,5 @@ class NoteRepository extends ServiceEntityRepository
            ->getOneOrNullResult()
        ;
    }
+
 }

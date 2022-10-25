@@ -16,9 +16,7 @@ class NotePageController extends AbstractController
         $response = $this->render('static/howitworks.html.twig', []);
 
         $response->setPublic();
-        $response->setMaxAge(14400); //4 hours
-
-        // (optional) set a custom Cache-Control directive
+        $response->setMaxAge(14400); 
         $response->headers->addCacheControlDirective('must-revalidate', true);
 
         return $response;
@@ -29,9 +27,7 @@ class NotePageController extends AbstractController
         $response = $this->render('static/privacy.html.twig', []);
 
         $response->setPublic();
-        $response->setMaxAge(14400); //4 hours
-
-        // (optional) set a custom Cache-Control directive
+        $response->setMaxAge(14400);
         $response->headers->addCacheControlDirective('must-revalidate', true);
 
         return $response;
@@ -43,9 +39,7 @@ class NotePageController extends AbstractController
         $response = $this->render('static/generate-password.html.twig', []);
 
         $response->setPublic();
-        $response->setMaxAge(14400); //4 hours
-
-        // (optional) set a custom Cache-Control directive
+        $response->setMaxAge(14400);
         $response->headers->addCacheControlDirective('must-revalidate', true);
 
         return $response;
