@@ -48,7 +48,7 @@ function ab2b64( buffer ) { //_arrayBufferToBase64
     return window.btoa( binary );
 }
 
-function randomString(length) {
+function randomString(length) { // https://security.stackexchange.com/questions/181580/why-is-math-random-not-designed-to-be-cryptographically-secure
     var charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     var i;
     var result = "";

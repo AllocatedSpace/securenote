@@ -1,4 +1,4 @@
-function randomString(length, charset) {
+function randomString(length, charset) { // https://security.stackexchange.com/questions/181580/why-is-math-random-not-designed-to-be-cryptographically-secure
     var i;
     var result = "";
     var isOpera = Object.prototype.toString.call(window.opera) == '[object Opera]';
