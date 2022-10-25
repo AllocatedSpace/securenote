@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Note;
-use App\Service\SaferCrypto;
+// use App\Service\SaferCrypto;
 use App\Service\NoteGUID;
 use App\Service\Cron;
 use App\Service\RecaptchaV3Helper;
