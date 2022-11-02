@@ -138,7 +138,7 @@ export default class CreateNoteUI {
                                 $form[0].reset();
                                 $(appUI.settings.destroyOnReadPath).trigger('change');
                                 submitButton.attr('disabled', false);
-                                $(appUI.settings.statusUpdatesTextPath).addClass('hidden');
+                                $(appUI.settings.statusUpdatesPath).addClass('hidden');
                                 $(appUI.settings.statusUpdatesTextPath).text('');
                     
                             }, "json")
