@@ -13,6 +13,7 @@ export default class ViewNoteUI {
             loadingTemporary: '.loading-temporary',
             statusUpdateTextPath: '#status-updates-text',
             confirmDestroyButtonPath: '#confirm-destroy',
+            confirmCancelPath: '#confirm-cancel',
             reCaptchaSiteKey: $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content'),
             secretNoteGroupPath: '.secretnote-group',
             secretNoteTextareaPath: 'textarea#secretnote',
@@ -133,7 +134,7 @@ export default class ViewNoteUI {
                     }); //captcha
                 });
     
-                $('#confirm-cancel').on('click', function(){
+                $(appUI.settings.confirmCancelPath).on('click', function(){
                     window.location = '/';
                 });
     
