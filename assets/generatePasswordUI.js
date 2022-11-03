@@ -26,6 +26,18 @@ export default class GeneratePasswordUI {
             charsetNumbersExcAmbig:     '23456789',
             charsetSymbols:             '!@#$%^&*()_-+=~`{[}]\'";:.<>>,/?|\\',
             charsetSymbolsExcSpecials:  '!@#$%^&*()_-+=~`{[}];:.<>>,/?|',
+            permWithRepeatCountVarN: '.perm-withrepeat-count-var-n',
+            permWithRepeatCountVarR: '.perm-withrepeat-count-var-r',
+            permWithRepeatCount: '#perm-withrepeat-count',
+            permNoRepeatCountVarN: '.perm-norepeat-count-var-n',
+            permNoRepeatCountVarR: '.perm-norepeat-count-var-r',
+            permNoRepeatCount: '#perm-norepeat-count',
+        
+            strengthCheckPath: '.strength-display-real, #password-length, #generated-password',
+            badStrengthClassname: 'strength-bad',
+            okayStrengthClassname: 'strength-okay',
+            goodStrengthClassname: 'strength-good',
+            permLengthDescriptionPath: '#perm-withrepeat-count, #perm-norepeat-count'
         };
 
         if(typeof options !== 'object') {
@@ -50,7 +62,26 @@ export default class GeneratePasswordUI {
                 var length = $(appUI.settings.passwordLengthPath).val();
     
                 if(length <= 0) {
-                    length = 4;
+                    length = 3;
+                }
+
+
+                $(appUI.settings.strengthCheckPath)
+                    .removeClass(appUI.settings.badStrengthClassname)
+                    .removeClass(appUI.settings.okayStrengthClassname)
+                    .removeClass(appUI.settings.goodStrengthClassname);
+
+
+                if(length < 6) {
+                    $(appUI.settings.strengthCheckPath).addClass(appUI.settings.badStrengthClassname);
+                }
+
+                if(length >= 6 && length < 9) {
+                    $(appUI.settings.strengthCheckPath).addClass(appUI.settings.okayStrengthClassname);
+                }
+
+                if(length >= 9) {
+                    $(appUI.settings.strengthCheckPath).addClass(appUI.settings.goodStrengthClassname);
                 }
     
                 var excludeAmbigious = $(appUI.settings.excludeAmbigiousPath).is(':checked');
@@ -97,6 +128,46 @@ export default class GeneratePasswordUI {
                 }
     
                 $(appUI.settings.generatedPasswordPath).val(passGenerator.getPassword(length, charset));
+
+                var lengthClassnames = ['long', 'really-long', 'really-really-long', 'really-really-really-long'];
+                var lengthDescription = '';
+
+                for(var i = 0; i < lengthClassnames.length; i++) {
+                    $(appUI.settings.permLengthDescriptionPath).removeClass(lengthClassnames[i]);
+                }
+
+                try {
+                    $(appUI.settings.permWithRepeatCountVarN).text(charset.length);
+                    $(appUI.settings.permNoRepeatCountVarN).text(charset.length);
+                    $(appUI.settings.permWithRepeatCountVarR).text(length);
+                    $(appUI.settings.permNoRepeatCountVarR).text(length);
+                    $(appUI.settings.permWithRepeatCount).text(passGenerator.countPermutationsWithRepeat(length, charset));
+                    $(appUI.settings.permNoRepeatCount).text(passGenerator.countPermutationsNoRpeat(length, charset));                    
+
+                    if($(appUI.settings.permWithRepeatCount).text().length > 34) {
+                        lengthDescription = lengthClassnames[0];
+                    }
+
+                    if($(appUI.settings.permWithRepeatCount).text().length > 44) {
+                        lengthDescription =  lengthClassnames[1];
+                    }
+
+                    if($(appUI.settings.permWithRepeatCount).text().length > 54) {
+                        lengthDescription =  lengthClassnames[2];
+                    }
+
+                    if($(appUI.settings.permWithRepeatCount).text().length > 64) {
+                        lengthDescription =  lengthClassnames[3];
+                    }
+
+                    $(appUI.settings.permLengthDescriptionPath).addClass(lengthDescription);
+                    
+
+                } catch (e) {
+                    $(appUI.settings.permWithRepeatCount).text('?');
+                    $(appUI.settings.permNoRepeatCount).text('?');
+                }
+                
             };
     
             $(appUI.settings.passwordLengthPath).on('input', function(){

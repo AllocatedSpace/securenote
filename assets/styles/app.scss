@@ -237,6 +237,18 @@ a {
 	border-radius: 25px;
 }
 
+.slider.strength-bad::-webkit-slider-thumb {
+	box-shadow: inset 0px 0px 5px 3px rgba(255, 0, 0, 0.971);
+}
+
+.slider.strength-okay::-webkit-slider-thumb {
+	box-shadow: inset 0px 0px 5px 3px rgba(255, 149, 0, 0.85);
+}
+
+// .slider.strength-good::-webkit-slider-thumb {
+// 	box-shadow: 0px 0px 10px rgb(0 255 94 / 70%);
+// }
+
 .slider::-moz-range-thumb {
 	width: 25px; 
 	height: 25px;
@@ -246,12 +258,90 @@ a {
 	border-radius: 25px;
 }
 
+
 #generated-password {
 	font-size: 25px;
     font-family: 'Courier New', courier, sans-serif;
+	border-bottom: 4px solid transparent;
+
+	&.strength-bad {
+		border-bottom: 4px solid red;
+	}
+
+	&.strength-okay {
+		border-bottom: 4px solid rgb(255, 196, 0);
+	}
+
+	&.strength-good {
+		border-bottom: 4px solid rgb(0, 255, 94);
+	}
+}
+
+.strength-display-real {
+	border-bottom: 2px solid transparent;
+
+	&.strength-bad .count {
+		border-bottom: 2px solid red;
+	}
+
+	&.strength-okay .count{
+		border-bottom: 2px solid rgb(255, 196, 0);
+	}
+
+	&.strength-good .count {
+		border-bottom: 2px solid transparent; //rgb(0, 255, 94);
+	}
+}
+
+.count.long {
+	font-size: 90%;
+}
+
+.count.really-long {
+	font-size: 80%;
+}
+
+.count.really-really-long {
+	font-size: 70%;
+}
+
+.count.really-really-really-long {
+	font-size: 60%;
+}
+
+.strength-display-fyi {
+	font-size: 95%;
+
 }
 
 .src-link {
 	font-size: 10px;
     //top: -20px;
+}
+
+.do-and-dont {
+
+	list-style: none;
+	padding: 0 0 0 1.5em;
+
+	li {
+		margin-bottom: 1em;
+	}
+
+	li:before {
+		position: absolute;
+		margin-left: -1.5em;
+	}
+	
+	li.do:before
+	{
+		content: '\2713';
+		color: green
+	}
+
+	li.dont:before
+	{
+		content: '\2715';
+		color: red;
+	}
 }

@@ -123,3 +123,7 @@
         box-shadow: inset 0px -2px 0px 0rem rgb(253 174 13 / 69%); 
     }
 }
+
+h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
+    margin-bottom: 1rem !important; //changing value in _reboot
+}
