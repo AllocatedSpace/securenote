@@ -160,6 +160,9 @@ export default class GeneratePasswordUI {
                         lengthDescription =  lengthClassnames[3];
                     }
 
+                    $(appUI.settings.permWithRepeatCount).html($(appUI.settings.permWithRepeatCount).text().replace(/,/g, ',<wbr />'));
+                    $(appUI.settings.permNoRepeatCount).html($(appUI.settings.permNoRepeatCount).text().replace(/,/g, ',<wbr />'));                    
+
                     $(appUI.settings.permLengthDescriptionPath).addClass(lengthDescription);
                     
 
