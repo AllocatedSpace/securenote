@@ -18,9 +18,9 @@ export default class GeneratePasswordUI {
             includeNumbersPath: '#inc-numbers',
             includeSymbolsPath: '#inc-symbols',
             generatedPasswordPath: '#generated-password',
-            charsetAlphUpper:           'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            charsetAlphaUpper:           'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
             charsetAlphaUpperExcAmbig:  'ABCDEFGHJKMNPQRSTUVWXYZ',
-            charsetAlphLower:           'abcdefghijklmnopqrstuvwxyz',
+            charsetAlphaLower:           'abcdefghijklmnopqrstuvwxyz',
             charsetAlphaLowerExcAmbig:  'abcdefghjkmnpqrstuvwxyz',
             charsetNumbers:             '0123456789',
             charsetNumbersExcAmbig:     '23456789',
@@ -91,7 +91,7 @@ export default class GeneratePasswordUI {
                     if(excludeAmbigious) {
                         charset += appUI.settings.charsetAlphaUpperExcAmbig;
                     } else {
-                        charset += appUI.settings.charsetAlphUpper;
+                        charset += appUI.settings.charsetAlphaUpper;
                     }
                     
                 }
