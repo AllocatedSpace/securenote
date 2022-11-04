@@ -1,5 +1,5 @@
-// number to words originally created by: Abraham Joffe :: http://www.abrahamjoffe.com.au/ */
-// slightly modified by alexrs84
+// number to words originally created by: Abraham Joffe :: http://www.abrahamjoffe.com.au/ - https://nicholasacademy.com/numbertowordconverter.html
+// slightly modified 
 
 var units=new Array("one","two","three","four","five","six","seven","eight","nine");
 var teens=new  Array("ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen");
