@@ -49,8 +49,6 @@ export default class UISettings {
             try {
                 var _this = $(this);
 
-                console.log(_this.attr('id'));
-
                 if(!_this.attr('id')) {
                     return;
                 }
@@ -63,8 +61,6 @@ export default class UISettings {
 
                 if(elementType == 'input') {
                     var inputType = _this.attr('type');
-
-                    console.log(inputType);
 
                     if(inputType == 'checkbox' || inputType == 'radio') {
 
