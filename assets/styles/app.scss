@@ -213,21 +213,22 @@ a {
 .slider {
 	appearance: none;
 	-webkit-appearance: none;
-    width: 300px;
-    height: 15px;
+    //width: 300px;
+    height: 6px;
     border-radius: 5px;
-    background: #eeeeeea8;
+    background: #eeeeee;
     outline: none;
     //-webkit-transition: all .15s ease-in-out;
     //transition: all .15s ease-in-out;
 
+	margin-bottom: 1em;
+
 	-webkit-transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 	transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+	width: 100%;
 }
 
-.slider:hover {
-	background: #eeeeee;
-}
 
 .slider::-webkit-slider-thumb {
 	-webkit-appearance: none; 
