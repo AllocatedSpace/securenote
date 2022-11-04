@@ -94,7 +94,14 @@ export default class CreateNoteUI {
                             };
     
                             $(appUI.settings.statusUpdatesTextPath).text('Uploading encrypted data to server for storage...').show();
-                            gtag('event', 'create-note', { 'event_category': 'notes', 'event_label': 'Create Note' });
+                            
+
+                            try {
+                                gtag('event', 'create-note', { 'event_category': 'notes', 'event_label': 'Create Note' });
+                            }
+                            catch(e) {
+                                
+                            }
     
                             $.post(appUI.settings.postURL, data, function(data){
             

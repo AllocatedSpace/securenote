@@ -125,6 +125,14 @@ export default class GeneratePasswordUI {
                     $(appUI.settings.generatedPasswordPath).val('select atleast one character set option :)');
                     return;
                 }
+
+                try {
+                    gtag('event', 'generate-password', { 'event_category': 'passwords', 'event_label': 'Generate Password' });
+                }
+                catch(e) {
+                    
+                }
+
     
                 $(appUI.settings.generatedPasswordPath).val(passGenerator.getPassword(length, charset));
 

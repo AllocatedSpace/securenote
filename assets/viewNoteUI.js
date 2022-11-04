@@ -93,7 +93,13 @@ export default class ViewNoteUI {
                                             $(appUI.settings.deleteNoteButtonPath).fadeIn('fast');
                                         }                                    
     
-                                        gtag('event', 'confirm-destroy-note', { 'event_category': 'notes', 'event_label': 'Read and Destroy' });
+                                        
+                                        try {
+                                            gtag('event', 'confirm-destroy-note', { 'event_category': 'notes', 'event_label': 'Read and Destroy' });
+                                        }
+                                        catch(e) {
+                                            
+                                        }
     
                                     } catch (ex) {
                                         $(appUI.settings.loadingErrorPath).text("Error decrypting: Name: " + ex.name + ", Message: " + ex.message);
@@ -158,7 +164,13 @@ export default class ViewNoteUI {
     
                                 $(appUI.settings.deleteNoteButtonPath).fadeOut();
     
-                                gtag('event', 'manual-destroy-note', { 'event_category': 'notes', 'event_label': 'Manual Delete' });
+
+                                try {
+                                    gtag('event', 'manual-destroy-note', { 'event_category': 'notes', 'event_label': 'Manual Delete' });
+                                }
+                                catch(e) {
+                                    
+                                }
     
                             
                             }, "json")
@@ -224,7 +236,13 @@ export default class ViewNoteUI {
                 
                                 } else {
                 
-                                    gtag('event', 'read-note', { 'event_category': 'notes', 'event_label': 'Read Note' });
+
+                                    try {
+                                        gtag('event', 'read-note', { 'event_category': 'notes', 'event_label': 'Read Note' });
+                                    }
+                                    catch(e) {
+                                        
+                                    }
                 
                                     (async () => {
                                         //decrypt and show
@@ -271,7 +289,13 @@ export default class ViewNoteUI {
                                 $(appUI.settings.loadingErrorPath).show();
                 
                 
-                                gtag('event', '404-read-note', { 'event_category': 'notes', 'event_label': 'Error Reading Note; expired or doesnt exist' });
+                                
+                                try {
+                                    gtag('event', '404-read-note', { 'event_category': 'notes', 'event_label': 'Error Reading Note; expired or doesnt exist' });
+                                }
+                                catch(e) {
+                                    
+                                }
                                 
                             })
                             .always(function() {
