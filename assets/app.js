@@ -3,37 +3,19 @@ import './styles/layout.scss';
 import './styles/app.scss';
 
 require('bootstrap');
-import { Modal } from 'bootstrap';
 
 import $ from 'jquery';
-import SecureNote from './noteApp.js';
-import PasswordGenerator from './passwordApp.js';
-import moment from 'moment';
 
 import CreateNoteUI from './createNoteUI.js';
 import ViewNoteUI from './viewNoteUI.js';
 import GeneratePasswordUI from './generatePasswordUI.js';
+import UISettings from './settings.js';
 
-var theme = 'light';
-
-theme = window.getTheme();
 
 $(function() {
 
-    try {
-        
-        if(theme == 'light') {
-            $('#theme-switch').attr('checked', 'checked'); 
-        }
-
-        $('#theme-switch').on('input change', function(){
-            var theme = $(this).is(':checked') ? 'light' : 'dark';
-            localStorage.setItem('theme', theme);
-            document.documentElement.setAttribute('data-theme', theme);
-        });
-    } catch (e) {
-        
-    }
+    var settings = new UISettings({});
+    settings.bindRememberance();
     
     var viewNoteUI = new ViewNoteUI({});
     viewNoteUI.bind();
@@ -44,37 +26,26 @@ $(function() {
     var generatePasswordUI = new GeneratePasswordUI({});
     generatePasswordUI.bind();
 
-
     //test sandbox
     /*
     $('#container-note-test #btn-encrypt').on('click', function(){
         (async () => {
             var encryptingNoteApp = new SecureNote();
             $('#tst-key').text(encryptingNoteApp.getKey());
-
             var encryptingKeyHash = await encryptingNoteApp.getKeyHash();
             $('#tst-key-hash').text(encryptingKeyHash);
-
             var encryptedB65 = await encryptingNoteApp.encrypt( $('#tst-source').val() );
             $('#tst-encrypted').text(encryptedB65);
-
             // test descrypt:
-
             var decryptingNoteApp = new SecureNote($('#tst-key').text()); //pass the key
             var decryptingKeyHash = await decryptingNoteApp.getKeyHash();
             $('#tst-key-hash-2').text(decryptingKeyHash);
-            
             var decryptedText = await decryptingNoteApp.decrypt( $('#tst-encrypted').val() );
             $('#tst-decrypted').text(decryptedText);
         })();
     });
     */
-
-
-    
-
 });
-
 
 $('button.cpy-from').each(function(){
 
@@ -99,7 +70,6 @@ $('button.cpy-from').each(function(){
     });
 
 });
-
 
 
 $(function() {
