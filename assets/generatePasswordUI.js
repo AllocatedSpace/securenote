@@ -1,6 +1,7 @@
 require('bootstrap');
 import $ from 'jquery';
 import PasswordGenerator from './passwordApp.js';
+import NumberToWords from './numberToWords.js';
 
 export default class GeneratePasswordUI {
 
@@ -28,16 +29,13 @@ export default class GeneratePasswordUI {
             charsetSymbolsExcSpecials:  '!@#$%^&*()_-+=~`{[}];:.<>>,/?|',
             permWithRepeatCountVarN: '.perm-withrepeat-count-var-n',
             permWithRepeatCountVarR: '.perm-withrepeat-count-var-r',
-            permWithRepeatCount: '#perm-withrepeat-count',
-            permNoRepeatCountVarN: '.perm-norepeat-count-var-n',
-            permNoRepeatCountVarR: '.perm-norepeat-count-var-r',
-            permNoRepeatCount: '#perm-norepeat-count',
-        
-            strengthCheckPath: '.strength-display-real, #password-length, #generated-password',
+            permWithRepeatCount: '#perm-withrepeat-count',        
+            strengthCheckPath: '.strength-display-real, #password-length, #generated-password, .password-information',
             badStrengthClassname: 'strength-bad',
             okayStrengthClassname: 'strength-okay',
             goodStrengthClassname: 'strength-good',
-            permLengthDescriptionPath: '#perm-withrepeat-count, #perm-norepeat-count'
+            permLengthDescriptionPath: '#perm-withrepeat-count',
+            numToWordsPath: '#num-to-words > code',
         };
 
         if(typeof options !== 'object') {
@@ -54,6 +52,7 @@ export default class GeneratePasswordUI {
         $(appUI.settings.containerPath).each(function(){
 
             var passGenerator = new PasswordGenerator();
+            var numToWord = new NumberToWords;
             var lengthDisplay = $(appUI.settings.passwordLengthDisplayPath);
             var refreshButton = $(appUI.settings.refreshPasswordPath);
     
@@ -138,11 +137,14 @@ export default class GeneratePasswordUI {
 
                 try {
                     $(appUI.settings.permWithRepeatCountVarN).text(charset.length);
-                    $(appUI.settings.permNoRepeatCountVarN).text(charset.length);
                     $(appUI.settings.permWithRepeatCountVarR).text(length);
-                    $(appUI.settings.permNoRepeatCountVarR).text(length);
                     $(appUI.settings.permWithRepeatCount).text(passGenerator.countPermutationsWithRepeat(length, charset));
-                    $(appUI.settings.permNoRepeatCount).text(passGenerator.countPermutationsNoRpeat(length, charset));                    
+
+                    try {
+                        $(appUI.settings.numToWordsPath).text(numToWord.getWords($(appUI.settings.permWithRepeatCount).text()) + ' possible permutations.');
+                    } catch(e) {
+                        $(appUI.settings.numToWordsPath).text('');
+                    }
 
                     if($(appUI.settings.permWithRepeatCount).text().length > 34) {
                         lengthDescription = lengthClassnames[0];
@@ -160,15 +162,12 @@ export default class GeneratePasswordUI {
                         lengthDescription =  lengthClassnames[3];
                     }
 
-                    $(appUI.settings.permWithRepeatCount).html($(appUI.settings.permWithRepeatCount).text().replace(/,/g, ',<wbr />'));
-                    $(appUI.settings.permNoRepeatCount).html($(appUI.settings.permNoRepeatCount).text().replace(/,/g, ',<wbr />'));                    
-
+                    $(appUI.settings.permWithRepeatCount).html($(appUI.settings.permWithRepeatCount).text().replace(/,/g, ',<wbr />'));                
                     $(appUI.settings.permLengthDescriptionPath).addClass(lengthDescription);
                     
 
                 } catch (e) {
                     $(appUI.settings.permWithRepeatCount).text('?');
-                    $(appUI.settings.permNoRepeatCount).text('?');
                 }
                 
             };
