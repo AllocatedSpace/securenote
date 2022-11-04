@@ -36,6 +36,7 @@ export default class GeneratePasswordUI {
             goodStrengthClassname: 'strength-good',
             permLengthDescriptionPath: '#perm-withrepeat-count',
             numToWordsPath: '#num-to-words > code',
+            copyPasswordButtonPath: '#copy-generated-password'
         };
 
         if(typeof options !== 'object') {
@@ -126,13 +127,6 @@ export default class GeneratePasswordUI {
                     return;
                 }
 
-                try {
-                    gtag('event', 'generate-password', { 'event_category': 'passwords', 'event_label': 'Generate Password' });
-                }
-                catch(e) {
-                    
-                }
-
     
                 $(appUI.settings.generatedPasswordPath).val(passGenerator.getPassword(length, charset));
 
@@ -190,11 +184,31 @@ export default class GeneratePasswordUI {
             });
     
             refreshButton.on('click', function(e){
-               e.preventDefault();
-               generatePassword();
+                e.preventDefault();
+                generatePassword();
+
+                try {
+                    gtag('event', 'refresh-password', { 'event_category': 'passwords', 'event_label': 'Refresh Generated Password' });
+                }
+                catch(e) {
+
+                }
             });
     
             $(appUI.settings.passwordLengthPath).trigger('input');
+
+            $(appUI.settings.copyPasswordButtonPath).on('click', function(){
+
+                try {
+                    gtag('event', 'copy-password', { 'event_category': 'passwords', 'event_label': 'Copy Generated Password' });
+                }
+                catch(e) {
+    
+                }
+
+            });
+
+           
             
         });
 
