@@ -44,7 +44,7 @@ function permutationsNonRepeat(n, k) {
 //set n, of length k
 //<sup>n</p>P<sub>r</sub> = n<sup>r</sup>
 function permutationsWithRepeat(n, k) {
-    return Math.pow(n, k);
+    return BigInt(Math.pow(n, k));
 }
 
 export default class PasswordGenerator {
