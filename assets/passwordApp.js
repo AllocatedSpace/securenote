@@ -68,7 +68,11 @@ function timeToBruteforce(n, k, computers, pps) {
 
         //did we overflow?
         if(data.years > Number.MAX_SAFE_INTEGER) {
-            data.years = BigInt(data.years.toLocaleString().replace(/,/g, '')).toLocaleString();
+
+            data.years = BigInt(((exp / 2n) / ppsn) / computersn).toLocaleString();
+
+
+            //data.years = BigInt(data.years.toLocaleString().replace(/,/g, '')).toLocaleString();
             data.hideLessThanYear = true;
         } else {
             data.years = parseInt(data.years).toLocaleString();
