@@ -47,6 +47,68 @@ function permutationsWithRepeat(n, k) {
     return BigInt(Math.pow(n, k));
 }
 
+function timeToBruteforce(n, k, computers, pps) {
+    var data = {years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, hideLessThanYear: false};
+
+    //we will /2 because that's the average
+    var exp = BigInt(Math.pow(n, k));
+    var ppsn = BigInt(pps);
+    var computersn = BigInt(computers);
+    var actualSecondsNeeded = Number(((exp / 2n) / ppsn) / computersn);
+
+    if(actualSecondsNeeded >= 31536000)
+    {
+        //data.years = (actualSecondsNeeded / 31536000).toLocaleString();
+        data.years = (actualSecondsNeeded / 31536000);
+        data.months = (data.years % 1) * 12;
+        data.days = (data.months % 1) * 30;
+        data.hours = (data.days % 1) * 24;
+        data.minutes = (data.hours % 1) * 60;
+        data.seconds = (data.minutes % 1) * 60;   
+
+        //did we overflow?
+        if(data.years > Number.MAX_SAFE_INTEGER) {
+            data.years = BigInt(data.years.toLocaleString().replace(/,/g, '')).toLocaleString();
+            data.hideLessThanYear = true;
+        } else {
+            data.years = parseInt(data.years).toLocaleString();
+        }
+
+    } else if(actualSecondsNeeded >= 2592000) {
+        data.months = actualSecondsNeeded / 2592000;
+        data.days = (data.months % 1) * 30;
+        data.hours = (data.days % 1) * 24;
+        data.minutes = (data.hours % 1) * 60;
+        data.seconds = (data.minutes % 1) * 60;    
+
+    } else if(actualSecondsNeeded >= 86400) {
+        data.days = actualSecondsNeeded / 86400;
+        data.hours = (data.days % 1) * 24;
+        data.minutes = (data.hours % 1) * 60;
+        data.seconds = (data.minutes % 1) * 60;   
+
+    } else if(actualSecondsNeeded >= 3600) {
+        data.hours = actualSecondsNeeded / 3600;
+        data.minutes = (data.hours % 1) * 60;
+        data.seconds = (data.minutes % 1) * 60;  
+
+    } else if(actualSecondsNeeded >= 60) {
+        data.minutes = actualSecondsNeeded / 60;
+        data.seconds = (data.minutes % 1) * 60;    
+
+    } else {
+        data.seconds = actualSecondsNeeded;    
+    }
+    
+    data.months = parseInt(data.months).toLocaleString();
+    data.days = parseInt(data.days).toLocaleString();
+    data.hours = parseInt(data.hours).toLocaleString();
+    data.minutes = parseInt(data.minutes).toLocaleString();
+    data.seconds = parseInt(data.seconds).toLocaleString();
+
+    return data;
+}
+
 export default class PasswordGenerator {
 
     getPassword(length, charset) {
@@ -60,5 +122,12 @@ export default class PasswordGenerator {
     countPermutationsWithRepeat(length, charset) {
         return (permutationsWithRepeat(charset.length, parseInt(length))).toLocaleString();
     }
+
+    timeToBruteforce(length, charset, computers, pps) {
+        return timeToBruteforce(charset.length, parseInt(length), computers, pps);
+    }
+
+
+    
 
 }

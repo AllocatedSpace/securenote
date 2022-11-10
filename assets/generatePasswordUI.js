@@ -36,7 +36,18 @@ export default class GeneratePasswordUI {
             goodStrengthClassname: 'strength-good',
             permLengthDescriptionPath: '#perm-withrepeat-count',
             numToWordsPath: '#num-to-words > code',
-            copyPasswordButtonPath: '#copy-generated-password'
+            copyPasswordButtonPath: '#copy-generated-password',
+            timingOptionComputersPath: '#password-timing-option-computers',
+            timingOptionPPSPath: '#password-timing-option-passpersecond',
+            timingResultsMilleniaPath: '#password-timing-millenia',
+            timingResultsYearsPath: '#password-timing-years',
+            timingResultsMonthsPath: '#password-timing-months',
+            timingResultsDaysPath: '#password-timing-days',
+            timingResultsHoursPath: '#password-timing-hours',
+            timingResultsMinutesPath: '#password-timing-minutes',
+            timingResultsSecondsPath: '#password-timing-seconds',
+            hideLessThanYearTimingPath: '#hide-less-than-year-timing'
+
         };
 
         if(typeof options !== 'object') {
@@ -56,10 +67,12 @@ export default class GeneratePasswordUI {
             var numToWord = new NumberToWords;
             var lengthDisplay = $(appUI.settings.passwordLengthDisplayPath);
             var refreshButton = $(appUI.settings.refreshPasswordPath);
+            var charset = '';
+            var length = $(appUI.settings.passwordLengthPath).val();
     
             var generatePassword = function(){
-                var charset = '';
-                var length = $(appUI.settings.passwordLengthPath).val();
+                charset = '';
+                length = $(appUI.settings.passwordLengthPath).val();
     
                 if(length <= 0) {
                     length = 3;
@@ -171,6 +184,29 @@ export default class GeneratePasswordUI {
                 } catch (e) {
                     $(appUI.settings.permWithRepeatCount).text('?');
                 }
+
+                try {
+
+                    var computers = (($(appUI.settings.timingOptionComputersPath).val()).replace(/[^0-9]+/g, ''));
+                    var pps = (($(appUI.settings.timingOptionPPSPath).val()).replace(/[^0-9]+/g, ''));
+                    var timingData = passGenerator.timeToBruteforce(length, charset, computers, pps);
+
+                    $(appUI.settings.timingResultsYearsPath).text(timingData.years);
+                    $(appUI.settings.timingResultsMonthsPath).text(timingData.months);
+                    $(appUI.settings.timingResultsDaysPath).text(timingData.days);
+                    $(appUI.settings.timingResultsHoursPath).text(timingData.hours);
+                    $(appUI.settings.timingResultsMinutesPath).text(timingData.minutes);
+                    $(appUI.settings.timingResultsSecondsPath).text(timingData.seconds);
+
+                    if(timingData.hideLessThanYear) {
+                        $(appUI.settings.hideLessThanYearTimingPath).hide();
+                    } else {
+                        $(appUI.settings.hideLessThanYearTimingPath).show();
+                    }
+                    
+                } catch (e) {
+                    console.log(e);
+                }
                 
             };
     
@@ -182,6 +218,27 @@ export default class GeneratePasswordUI {
             $(`${appUI.settings.includeUpperAlphaPath}, ${appUI.settings.includeLowerAlphaPath}, ${appUI.settings.includeNumbersPath}, ${appUI.settings.includeSymbolsPath}, ${appUI.settings.excludeSpecialsPath}, ${appUI.settings.excludeAmbigiousPath}`).on('input', function(){
                 generatePassword();
             });
+
+            $(`${appUI.settings.timingOptionComputersPath}, ${appUI.settings.timingOptionPPSPath}`).on('input', function(){
+                var computers = (($(appUI.settings.timingOptionComputersPath).val()).replace(/[^0-9]+/g, ''));
+                var pps = (($(appUI.settings.timingOptionPPSPath).val()).replace(/[^0-9]+/g, ''));
+                var timingData = passGenerator.timeToBruteforce(length, charset, computers, pps);
+                
+                $(appUI.settings.timingResultsYearsPath).text(timingData.years);
+                $(appUI.settings.timingResultsMonthsPath).text(timingData.months);
+                $(appUI.settings.timingResultsDaysPath).text(timingData.days);
+                $(appUI.settings.timingResultsHoursPath).text(timingData.hours);
+                $(appUI.settings.timingResultsMinutesPath).text(timingData.minutes);
+                $(appUI.settings.timingResultsSecondsPath).text(timingData.seconds);
+
+                if(timingData.hideLessThanYear) {
+                    $(appUI.settings.hideLessThanYearTimingPath).hide();
+                } else {
+                    $(appUI.settings.hideLessThanYearTimingPath).show();
+                }
+            });
+
+          
     
             refreshButton.on('click', function(e){
                 e.preventDefault();
