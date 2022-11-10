@@ -222,6 +222,17 @@ export default class GeneratePasswordUI {
             $(`${appUI.settings.timingOptionComputersPath}, ${appUI.settings.timingOptionPPSPath}`).on('input', function(){
                 var computers = (($(appUI.settings.timingOptionComputersPath).val()).replace(/[^0-9]+/g, ''));
                 var pps = (($(appUI.settings.timingOptionPPSPath).val()).replace(/[^0-9]+/g, ''));
+
+                if(computers < 1) {
+                    computers = 1;
+                    $(appUI.settings.timingOptionComputersPath).val(1);
+                }
+
+                if(pps < 1) {
+                    pps = 1;
+                    $(appUI.settings.timingOptionPPSPath).val(1);
+                }
+
                 var timingData = passGenerator.timeToBruteforce(length, charset, computers, pps);
                 
                 $(appUI.settings.timingResultsYearsPath).text(timingData.years);
