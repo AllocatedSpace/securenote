@@ -1,8 +1,10 @@
+require('bootstrap');
+
 import './styles/themes.scss';
 import './styles/layout.scss';
 import './styles/app.scss';
 
-require('bootstrap');
+
 
 import $ from 'jquery';
 

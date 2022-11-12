@@ -176,6 +176,35 @@ a {
 	}
 }
 
+.form-control-colors {
+	background-color: #0d1117;
+	background-color: var(--form-element-bg);
+	border: 1px solid #30363d;
+	border: 1px solid var(--form-control-border);
+	color: #f0f0f0;
+	color: var(--form-color);
+
+	
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    background-clip: padding-box;
+    appearance: none;
+    border-radius: 0.375rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+	&:focus {
+		color: #ededed;
+		color: var(--form-control-focus-color);
+		background-color: #0f1317;
+		background-color: var(--form-element-bg-focus);
+		border-color: #86b7fe;
+		outline: 0;
+		box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+	}
+}
+
 .modal-content {
 	background-color: #161b22;
 	background-color: var(--modal-bg);
@@ -385,8 +414,8 @@ a {
 .password-timing {
 	input[type="number"] {
 		width: 4em;
-		border: 1px solid #dfdfdf;
-		padding: 4px;
+		//border: 1px solid #dfdfdf;
+		//padding: 4px;
 	}
 }
 
