@@ -49,6 +49,22 @@ $(function() {
     */
 });
 
+$('.plural-if-over-1').each(function(){
+    if(!$(this).data('element')) {
+        return;
+    }
+
+    var _this = $(this);
+    var element = $(_this.data('element'));
+    element.on('input', function(){
+        if(parseInt($(this).val()) > 1) {
+            _this.show();
+        } else {
+            _this.hide();
+        }
+    });
+});
+
 $('button.cpy-from').each(function(){
 
     var _this = $(this);

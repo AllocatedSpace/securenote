@@ -413,9 +413,9 @@ a {
 
 .password-timing {
 	input[type="number"] {
-		width: 4em;
-		//border: 1px solid #dfdfdf;
-		//padding: 4px;
+		width: 7em;
+		font-size: 12.5px;
+		padding: 4px;
 	}
 }
 
@@ -424,5 +424,5 @@ a {
 }
 
 #password-timing-option-passpersecond {
-	width: 6em;
+	width: 7em;
 }
