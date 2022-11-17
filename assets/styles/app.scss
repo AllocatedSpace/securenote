@@ -316,6 +316,11 @@ a {
 	&.strength-good {
 		border-bottom: 4px solid rgb(7 189 60);
 	}
+
+	&:focus {
+		outline: 0;
+		box-shadow: none !important;
+	}
 }
 
 .strength-display {

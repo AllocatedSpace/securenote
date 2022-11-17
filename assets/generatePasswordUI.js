@@ -275,8 +275,6 @@ export default class GeneratePasswordUI {
                 }
 
             });
-
-           
             
         });
 
