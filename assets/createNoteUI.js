@@ -138,7 +138,7 @@ export default class CreateNoteUI {
     
                                 //other tips
                                 $(appUI.settings.savedNoteTips).find('span').remove();
-                                $('<span class="mb-md-1" />').html('<strong>Max TTL:</strong> ' + $form.find('select[name="ttl"] option:selected').text()).appendTo($(appUI.settings.savedNoteTips));
+                                $('<span class="mb-md-1" />').html('<strong>Max Life:</strong> ' + $form.find('select[name="ttl"] option:selected').text()).appendTo($(appUI.settings.savedNoteTips));
                                 $('<span class="mb-md-1" />').html('<strong>Self Destructs when Read:</strong> ' + ($form.find(appUI.settings.destroyOnReadPath).is(':checked') ? 'yes' : 'no')).appendTo($(appUI.settings.savedNoteTips));
                                 $('<span class="mb-md-1" />').html('<strong>Manually Deletable:</strong> ' + ($form.find(appUI.settings.allowDeletePath).is(':checked') ? 'yes' : 'no')).appendTo($(appUI.settings.savedNoteTips));
     
