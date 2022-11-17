@@ -11,116 +11,116 @@
     <div class="row">
         <div class="col">
             
-            
             <form id="form-note-create">
 
+                <div class="modal fade" id="createdNoteMdlDlg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Shareable Secured Note</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
 
-
-
-            <input type="text" value="..." id="saved-link-to-copy" class="visually-hidden">
-            <div class="modal fade" id="createdNoteMdlDlg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Shareable Secured Note</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    <div class="aalert aalert-warning saved-link-display" role="alert">
-                        <div class="d-lg-flex flex-column flex-md-row justify-content-between align-items-center">
-                            <div class="copy-saved-link-container">
-                                <div class="nbtooltip mt-2 mt-md-0 mb-3 mb-0-md">
-                                    <button class="cpy-from btn btn-secondary" data-inputpath="#saved-link-to-copy" >
-                                        <span class="tooltiptext">Copy Link to clipboard</span>
-                                        <span class="tooltiptext-upon-copy" style="display:none">Copied!</span>
-                                        Copy Link
-                                    </button>
+                        <div class="aalert aalert-warning saved-link-display" role="alert">
+                            <div class="d-flex flex-md-row flex-column flex-wrap justify-content-between align-items-stretch">
+                                <div class="d-flex flex-row flex-grow-1 justify-content-between align-items-center">
+                                    <input type="text" class="form-control align-self-center" id="saved-link-to-copy" readonly />
+                                    <div class="copy-saved-link-container ms-3">
+                                        <div class="nbtooltip">
+                                            <button class="cpy-from btn btn-secondary" data-inputpath="#saved-link-to-copy" >
+                                                <span class="tooltiptext">Copy Link to clipboard</span>
+                                                <span class="tooltiptext-upon-copy" style="display:none">Copied!</span>
+                                                Copy Link
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center mt-2 mt-md-0 ms-md-3">
+                                    <img src="" id="qrcode-img" />
                                 </div>
                             </div>
-                            <span class="align-self-center" id="saved-link"></span>
+                            <div id="saved-note-tips" class="mt-3 d-md-flex flex-column flex-md-row justify-content-center"></div>
                         </div>
-                        <div id="saved-note-tips" class="mt-3 d-md-flex flex-column flex-md-row justify-content-center"></div>
+
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Start Over</button>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Start Over</button>
-
-                </div>
-                </div>
-            </div>
-            </div>
-
-
-
-            <div id="create-form-controls"  class="content-block">
-                <sup class="src-link">
-                    <a href="https://github.com/alexrs84/securenote/blob/main/assets/noteApp.js#L113" target="_blank">src client #1 (Crypto)</a>, 
-                    <a href="https://github.com/alexrs84/securenote/blob/main/assets/createNoteUI.js" target="_blank">src client #2 (UI)</a>,
-                    <a href="https://github.com/alexrs84/securenote/blob/main/src/Controller/NoteController.php#L224" target="_blank">src server</a>
-                </sup>
-                <h1>New Note </h1>
-                
-                <div class="form-row d-flex flex-column flex-sm-row align-items-sm-center mb-3">
-                    <div class="form-group ttl-container">
-                        <label for="ttl">Maximum Time-to-Live (if not deleted sooner)</label>
-                        <select class="form-select remember-value" aria-label="Maximum time for the note to live" name="ttl" id="ttl">
-                            <option value="15M">15 Minutes</option>
-                            <option value="30M">30 Minutes</option>
-                            <option value="45M">45 Minutes</option>
-                            <option value="1H">1 Hour</option>
-                            <option value="3H">3 Hours</option>
-                            <option value="6H">6 Hours</option>
-                            <option value="12H">12 Hours</option>
-                            <option value="1D">1 Day</option>
-                            <option value="3D">3 Days</option>
-                            <option value="7D" selected>7 Days</option>
-                            <option value="14D">14 Days</option>
-                            <option value="21D">21 Days</option>
-                            <option value="31D">31 Days</option>
-                        </select>
                     </div>
-                    <div class="fform-group ps-lg-5 pt-3 d-flex align-items-center">
-                        <div class="form-check">
-                            <input class="form-check-input remember-value" type="checkbox" name="destroy-on-read" id="destroy-on-read" checked>
-                            <label class="form-check-label" for="destroy-on-read">
-                                Destroy on read
-                            </label>
+                    </div>
+                </div>
+                </div>
+
+
+
+                <div id="create-form-controls"  class="content-block">
+                    <sup class="src-link">
+                        <a href="https://github.com/alexrs84/securenote/blob/main/assets/noteApp.js#L113" target="_blank">src client #1 (Crypto)</a>, 
+                        <a href="https://github.com/alexrs84/securenote/blob/main/assets/createNoteUI.js" target="_blank">src client #2 (UI)</a>,
+                        <a href="https://github.com/alexrs84/securenote/blob/main/src/Controller/NoteController.php#L224" target="_blank">src server</a>
+                    </sup>
+                    <h1>New Note </h1>
+                    
+                    <div class="form-row d-flex flex-column flex-sm-row align-items-sm-center mb-3">
+                        <div class="form-group ttl-container">
+                            <label for="ttl">Maximum Time-to-Live (if not deleted sooner)</label>
+                            <select class="form-select remember-value" aria-label="Maximum time for the note to live" name="ttl" id="ttl">
+                                <option value="15M">15 Minutes</option>
+                                <option value="30M">30 Minutes</option>
+                                <option value="45M">45 Minutes</option>
+                                <option value="1H">1 Hour</option>
+                                <option value="3H">3 Hours</option>
+                                <option value="6H">6 Hours</option>
+                                <option value="12H">12 Hours</option>
+                                <option value="1D">1 Day</option>
+                                <option value="3D">3 Days</option>
+                                <option value="7D" selected>7 Days</option>
+                                <option value="14D">14 Days</option>
+                                <option value="21D">21 Days</option>
+                                <option value="31D">31 Days</option>
+                            </select>
                         </div>
-                    </div>
-
-                    <div class="fform-group ps-sm-3 ps-md-5 pt-3 mr-auto d-flex align-items-center">
-                        <div class="form-check">
-                            <input class="form-check-input remember-value" type="checkbox" name="allow-delete" id="allow-delete" disabled checked>
-                            <label class="form-check-label" for="allow-delete">
-                                Allow Manual Deletion
-                            </label>
+                        <div class="fform-group ps-lg-5 pt-3 d-flex align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input remember-value" type="checkbox" name="destroy-on-read" id="destroy-on-read" checked>
+                                <label class="form-check-label" for="destroy-on-read">
+                                    Destroy on read
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="form-row d-flex align-items-center  mb-3">
-                    <div class="form-group col-12" >
-                        <label for="secretnote">Content</label>
-                        <textarea class="form-control autogrow" name="secretnote" id="secretnote" rows="5" required></textarea>
-                    </div>
-                </div>
-
-
-                <div class="form-row d-flex flex-column flex-md-row flex-wrap justify-content-start align-items-stretch align-items-md-center ">
-                    <button type="submit" class="btn btn-primary ">Save Note</button>
-                    <div class="alert beside-button alert-primary status-updates animated1 hidden mt-2 mt-md-0 ms-0 ms-md-3" role="alert">
-                        <span id="status-updates-text"></span>
-                        <div class="snprogress-bar">
-                            <div class="snprogress-bar-value"></div>
+                        <div class="fform-group ps-sm-3 ps-md-5 pt-3 mr-auto d-flex align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input remember-value" type="checkbox" name="allow-delete" id="allow-delete" disabled checked>
+                                <label class="form-check-label" for="allow-delete">
+                                    Allow Manual Deletion
+                                </label>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="form-row d-flex align-items-center  mb-3">
+                        <div class="form-group col-12" >
+                            <label for="secretnote">Content</label>
+                            <textarea class="form-control autogrow" name="secretnote" id="secretnote" rows="5" required></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row d-flex flex-column flex-md-row flex-wrap justify-content-start align-items-stretch align-items-md-center ">
+                        <button type="submit" class="btn btn-primary ">Save Note</button>
+                        <div class="alert beside-button alert-primary status-updates animated1 hidden mt-2 mt-md-0 ms-0 ms-md-3" role="alert">
+                            <span id="status-updates-text"></span>
+                            <div class="snprogress-bar">
+                                <div class="snprogress-bar-value"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
 
-            <button type="button" class="btn btn-warning mt-4" id="create-a-new-note" style="display:none">Create A New Note <br /><small>(Copy your link first)</small></button>
+                <button type="button" class="btn btn-warning mt-4" id="create-a-new-note" style="display:none">Create A New Note <br /><small>(Copy your link first)</small></button>
 
             </form>
 

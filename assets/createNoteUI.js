@@ -16,8 +16,8 @@ export default class CreateNoteUI {
             reCaptchaSiteKey: $('meta[name="GOOGLE_RECAPTCHA_SITE_KEY"]').attr('content'),
             statusUpdatesTextPath: '#status-updates-text',
             statusUpdatesPath: '.status-updates',
-            savedLinkPath: '#saved-link',
             savedNoteTips: '#saved-note-tips',
+            qrCodeImgPath: '#qrcode-img',
             savedLinkToCopyPath: '#saved-link-to-copy',
             tooltipUponCopyPath: '.saved-link-display .tooltiptext-upon-copy',
             postURL: window.location.origin + window.location.pathname
@@ -107,22 +107,24 @@ export default class CreateNoteUI {
             
                                 $(appUI.settings.statusUpdatesTextPath).text('[Local] Creating shareable link...').show();
             
-                                $(appUI.settings.savedLinkPath).html('');
+                                $(appUI.settings.savedLinkToCopyPath).val('');
                                 $(appUI.settings.savedNoteTips).html();
-    
-                                var a = $('<a />')
-                                    .attr('href', data.link + '#' + key)
-                                    .text(data.link + '#' + key);
-    
-                                a.appendTo($(appUI.settings.savedLinkPath));
-    
-                                $(appUI.settings.savedLinkToCopyPath).val(data.link + '#' + key);
-                                $(appUI.settings.savedLinkToCopyPath).attr('value', data.link + '#' + key);
+
+                                var qrCodeURL = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' 
+                                    + data.link
+                                    + '%23' + key;
+
+                                $(appUI.settings.qrCodeImgPath).attr('src', qrCodeURL);
+
+                                var textURL = data.link + '#' + key;
+
+                                $(appUI.settings.savedLinkToCopyPath).val(textURL);
+                                $(appUI.settings.savedLinkToCopyPath).attr('value', textURL);
     
                                 var toolTipElement = $('<span />');
                                 $('<div />').text('Copied Link!').appendTo(toolTipElement);
     
-                                $('<div />').html('&#8729; Max TTL: ' + $form.find('select[name="ttl"] option:selected').text()).appendTo(toolTipElement);
+                                $('<div />').html('&#8729; Max Life: ' + $form.find('select[name="ttl"] option:selected').text()).appendTo(toolTipElement);
     
                                 if($form.find(appUI.settings.destroyOnReadPath).is(':checked')) {
                                     $('<div />').html('&#8729; Self-destructs').appendTo(toolTipElement);
