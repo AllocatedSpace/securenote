@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Note;
-// use App\Service\SaferCrypto;
 use App\Service\NoteGUID;
 use App\Service\Cron;
 use App\Service\RecaptchaV3Helper;
@@ -96,15 +95,13 @@ class NoteController extends AbstractController
         }      
 
         //we will just return the data. and whether or not it's been destroyed or will continue to live
-
         $encryptedData = stream_get_contents($note->getEncrypted());
 
         $deleteOnRead = $note->isDestroyOnRead();
         if($deleteOnRead)
         {
             $entityManager = $doctrine->getManager();
-            //$entityManager->remove($note);
-            $note->setEncrypted('');
+            $note->setEncrypted(''); //clear the encrypted data completely.
             $note->setDestroyed(new \DateTime('now'));
 
             $entityManager->flush();
@@ -325,7 +322,6 @@ class NoteController extends AbstractController
         $note->setAllowDelete($allowDelete);
 
         $expire = new \DateTime(); 
-        //$expire->add(\DateInterval::createFromDateString($daysToLive . ' day'));
         $expire->add(\DateInterval::createFromDateString($TTLValue . ' ' . $TTLUnit));
         $note->setExpire($expire);
 
@@ -363,35 +359,7 @@ class NoteController extends AbstractController
     /*
     public function test(): Response
     {
-        $guid = NoteGUID::uniqidReal();
-        $key = NoteGUID::uniqidReal();
         
-        $message = 'Lorem ipsum solar dot et!!';
-        $key = $key; //hex2bin('000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f');
-
-        $encrypted = SaferCrypto::encrypt($message, $key);
-        $decrypted = SaferCrypto::decrypt($encrypted, $key);
-        try {
-            $decryptedFail = SaferCrypto::decrypt($encrypted, $key . "asaaa");
-        }
-        catch(\Exception $e)
-        {
-            if($e->getMessage() == 'Encryption failure')
-            {
-                $decryptedFail = 'bad key';
-            }
-        }
-
-        $GOOGLE_RECAPTCHA_SITE_KEY = $this->getParameter('app.GOOGLE_RECAPTCHA_SITE_KEY');
-
-        return $this->render('note/test.html.twig', [
-            'guid' => $guid,
-            'key' => $key,
-            'encrypted' => base64_encode($encrypted),
-            'decrypted' => $decrypted,
-            'decryptedFail' => base64_encode($decryptedFail),
-            'GOOGLE_RECAPTCHA_SITE_KEY' => $GOOGLE_RECAPTCHA_SITE_KEY
-        ]);
     }
     */
 
