@@ -110,11 +110,11 @@ export default class CreateNoteUI {
                                 $(appUI.settings.savedLinkToCopyPath).val('');
                                 $(appUI.settings.savedNoteTips).html();
 
-                                var qrCodeURL = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' 
-                                    + data.link
-                                    + '%23' + key;
+                                // var qrCodeURL = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' 
+                                //     + data.link
+                                //     + '%23' + key;
 
-                                $(appUI.settings.qrCodeImgPath).attr('src', qrCodeURL);
+                                // $(appUI.settings.qrCodeImgPath).attr('src', qrCodeURL);
 
                                 var textURL = data.link + '#' + key;
 
