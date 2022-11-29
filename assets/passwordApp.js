@@ -22,7 +22,7 @@ function randomString(length, charset) { // https://security.stackexchange.com/q
         
         return result;
     }
-    else throw new Error("Your browser sucks and can't generate secure random numbers");
+    else throw new Error("Your browser can't generate secure random numbers.");
 }
 
 
