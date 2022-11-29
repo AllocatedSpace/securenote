@@ -73,7 +73,7 @@ function randomString(length) { // https://security.stackexchange.com/questions/
         
         return result;
     }
-    else throw new Error("Your browser sucks and can't generate secure random numbers");
+    else throw new Error("Your browser can't generate secure random numbers.");
 }
 
 async function encrypt(sourceText, keyData, iv) {
