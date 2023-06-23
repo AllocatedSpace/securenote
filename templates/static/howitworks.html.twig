@@ -11,22 +11,15 @@
 
             <div class="mt-4 content-block">
                 <h2 class="mb-3">Summary</h2>
-                <p>AES 128-bit encryption and decryption happens directly in your browser. To store the secure note, your browser sends the already encrypted data and a 
-                    <a target="_blank" rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">one-way SHA-256 hash</a> of the random key.</p>
+
+                <p>Your note is encrypted and decrypted using <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt" target="_blank" rel="external nofollow noopener">AES 128-bit encryption</a> directly in your browser. When storing the secure note, your browser sends the already encrypted data and a <a target="_blank" rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">one-way SHA-256 hash</a> of the random key.</p>
+
+                <p>The server cannot decrypt the note because the key is never sent to it. The key is stored in the shareable link as the <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"><code>location hash</code></a>, which browsers don't send to the server when making requests. Therefore, the server does not have access to your key even when you use the shared secure-note link.</p>
                 
-                <p>Since the key is never sent to the server, it's not possible for the server to decrypt the note. 
-                    The key is stored in the shareable link as the <a rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash" target="_blank"><code>location.hash</code></a>
-                    (the part after the "#" in the address bar). Browsers don't send the location hash in their request to the server, so the server still doesn't get a copy of your key 
-                    even when you follow the shared secure-note link.</p>
+                <p>To prevent bots from scraping encrypted information and ensure the "self-destruct" feature is respected, a <a target="_blank" rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">SHA-256 hash</a>  of the key is sent to the server. This adds an extra layer of security. The browser needs both the unique identifier (GUID) of the note and the <a target="_blank" rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">SHA-256 hash</a>  to retrieve and decrypt the encrypted data from the server.</p>
+                
+                <p>The server acts as a remote storage for the encrypted data but doesn't possess the decryption key. Even if the server's data is compromised, the encrypted data remains useless without the original link. So, to decrypt a note, you need the specific link associated with it.</p>
 
-                <p>A <a target="_blank" rel="external nofollow noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">SHA-256 hash</a> of the key is also sent to the server. 
-                    This is done to prevent bots from scraping encrypted blobs by guessing only part of the URI for (the GUID) and also
-                to ensure the "self-destruct" option is respected. The browser can't retrieve the encrypted data for a note unless it both knows the note's GUID and can prove
-                to the server it has the key to decrypt it (by providing the SHA-256 hash) with out actually sharing the key with the server.</p>
-
-                <p>In other words, the server is just a remote storage for the encrypted data <code>blob</code>. The server doesn't have the key to decrypt it, so even if it was data-dumped, the encrypted data is useless.
-                    To decrypt a note, you must have the original link for it.
-                </p>
             </div>
             
             
