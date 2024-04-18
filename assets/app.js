@@ -1,18 +1,12 @@
 require('bootstrap');
-
 import './styles/themes.scss';
 import './styles/layout.scss';
 import './styles/app.scss';
-
-
-
 import $ from 'jquery';
-
 import CreateNoteUI from './createNoteUI.js';
 import ViewNoteUI from './viewNoteUI.js';
 import GeneratePasswordUI from './generatePasswordUI.js';
 import UISettings from './settings.js';
-
 
 $(function() {
 
@@ -27,26 +21,6 @@ $(function() {
 
     var generatePasswordUI = new GeneratePasswordUI({});
     generatePasswordUI.bind();
-
-    //test sandbox
-    /*
-    $('#container-note-test #btn-encrypt').on('click', function(){
-        (async () => {
-            var encryptingNoteApp = new SecureNote();
-            $('#tst-key').text(encryptingNoteApp.getKey());
-            var encryptingKeyHash = await encryptingNoteApp.getKeyHash();
-            $('#tst-key-hash').text(encryptingKeyHash);
-            var encryptedB65 = await encryptingNoteApp.encrypt( $('#tst-source').val() );
-            $('#tst-encrypted').text(encryptedB65);
-            // test descrypt:
-            var decryptingNoteApp = new SecureNote($('#tst-key').text()); //pass the key
-            var decryptingKeyHash = await decryptingNoteApp.getKeyHash();
-            $('#tst-key-hash-2').text(decryptingKeyHash);
-            var decryptedText = await decryptingNoteApp.decrypt( $('#tst-encrypted').val() );
-            $('#tst-decrypted').text(decryptedText);
-        })();
-    });
-    */
 });
 
 $('.plural-if-over-1').each(function(){

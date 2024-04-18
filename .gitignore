@@ -2,6 +2,7 @@ composer.phar
 /vendor/
 .php-version
 
+notes.txt
 
 ###> symfony/framework-bundle ###
 /.env.local
