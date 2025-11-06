@@ -8,61 +8,6 @@ import ViewNoteUI from './viewNoteUI.js';
 import GeneratePasswordUI from './generatePasswordUI.js';
 import UISettings from './settings.js';
 
-$(function() {
-
-    var settings = new UISettings({});
-    settings.bindRememberance();
-    
-    var viewNoteUI = new ViewNoteUI({});
-    viewNoteUI.bind();
-
-    var createNoteUI = new CreateNoteUI({});
-    createNoteUI.bind();
-
-    var generatePasswordUI = new GeneratePasswordUI({});
-    generatePasswordUI.bind();
-});
-
-$('.plural-if-over-1').each(function(){
-    if(!$(this).data('element')) {
-        return;
-    }
-
-    var _this = $(this);
-    var element = $(_this.data('element'));
-    element.on('input', function(){
-        if(parseInt($(this).val()) > 1) {
-            _this.show();
-        } else {
-            _this.hide();
-        }
-    });
-});
-
-$('button.cpy-from').each(function(){
-
-    var _this = $(this);
-
-    var tooltip = $(this).find('.tooltiptext').first();
-    var originalText = tooltip.html();
-
-    _this.on('click', function(e){
-        e.preventDefault();
-        var inputPath = $($(this).data('inputpath'));  
-        var tooltipHTMLAfterCopy = $(this).find('.tooltiptext-upon-copy').first().html();
-        var copyText = inputPath[0]; 
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.value);
-        tooltip.html(tooltipHTMLAfterCopy);
-    });
-
-    _this.on('mouseout', function(e){
-        tooltip.html(originalText);
-    });
-
-});
-
 
 $(function() {
     /**
@@ -143,4 +88,61 @@ $(function() {
     $('textarea.autogrow').css('overflow', 'hidden').autogrow();
 });
 
+
+
+
+$(function() {
+
+    var settings = new UISettings({});
+    settings.bindRememberance();
+    
+    var viewNoteUI = new ViewNoteUI({});
+    viewNoteUI.bind();
+
+    var createNoteUI = new CreateNoteUI({});
+    createNoteUI.bind();
+
+    var generatePasswordUI = new GeneratePasswordUI({});
+    generatePasswordUI.bind();
+});
+
+$('.plural-if-over-1').each(function(){
+    if(!$(this).data('element')) {
+        return;
+    }
+
+    var _this = $(this);
+    var element = $(_this.data('element'));
+    element.on('input', function(){
+        if(parseInt($(this).val()) > 1) {
+            _this.show();
+        } else {
+            _this.hide();
+        }
+    });
+});
+
+$('button.cpy-from').each(function(){
+
+    var _this = $(this);
+
+    var tooltip = $(this).find('.tooltiptext').first();
+    var originalText = tooltip.html();
+
+    _this.on('click', function(e){
+        e.preventDefault();
+        var inputPath = $($(this).data('inputpath'));  
+        var tooltipHTMLAfterCopy = $(this).find('.tooltiptext-upon-copy').first().html();
+        var copyText = inputPath[0]; 
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        tooltip.html(tooltipHTMLAfterCopy);
+    });
+
+    _this.on('mouseout', function(e){
+        tooltip.html(originalText);
+    });
+
+});
 
